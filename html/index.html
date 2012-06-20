@@ -3,9 +3,9 @@
 <head>
 	<title>box</title>
 	<link type="text/css" rel="stylesheet" media="screen" href="/index.css" />
-	<script src=".libs/jquery.js"></script>
-	<script src=".libs/jquery-ui.js"></script>
-	<script src=".libs/jquery-validate.js"></script>
+	<script src="libs/jquery.js"></script>
+	<script src="libs/jquery-ui.js"></script>
+	<script src="libs/jquery-validate.js"></script>
 </head>
 <body>
 	<div id="wrapper">
@@ -124,7 +124,8 @@
 
 			function upload_progress_update() {
                 // Get progress of upload from progress tracking server
-				$.getJSON("/progress?X-Progress-ID=" + upload_tracking_id, function (data) {
+								$.getJSON("/progress?X-Progress-ID=" + upload_tracking_id, function (data) {
+
 					switch (data.state) {
 						case "starting":
 							$("#progress_bar").width("0%");
@@ -144,7 +145,7 @@
 							break;
 
 						case "uploading":
-							var f = data.received / data.size * 100.0;
+							var f = Math.round(data.received / data.size * 100.0 * 100.0) / 100.0;
 
 							$("#progress_bar").width(f + "%");
 							$("#progress_label").text(f + "%");

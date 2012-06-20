@@ -1,3 +1,22 @@
+/*                                                                                                                                                                                                                  
+ * Copyright 2011 Dustin Frisch<fooker@lab.sh>
+ * 
+ * This file is part of box.
+ * 
+ * box is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * box is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with box. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package main
 
 import (
@@ -11,8 +30,7 @@ import (
 	"net/http"
 	"net/http/fcgi"
 	"os"
-
-//    "encoding/json"
+    "encoding/json"
 )
 
 // Comand line arguments
@@ -20,6 +38,10 @@ var flag_laddr string
 
 var flag_storage string
 var flag_tempdir string
+
+type Result struct {
+    Id string
+}
 
 func init() {
 	// Add custom error handler for command line arguments
@@ -40,21 +62,25 @@ func init() {
 }
 
 func upload(response http.ResponseWriter, request *http.Request) {
-    var err error
-    
+	var err error
+	
+	var result Result
+	
+	fmt.Errorf("Doing...")
+
 	// Parse form data
+	log.Println("Start parsing...")
 	err = request.ParseMultipartForm(4096)
 	if err != nil {
-		response.WriteHeader(501)
-		response.Write([]byte(err.Error()))
+		http.Error(response, err.Error(), 500)
 		return
 	}
+	log.Println("Finished parsing...")
 
 	// Create temporary file for upload
 	tempFile, err := ioutil.TempFile(flag_tempdir, "upload_")
 	if tempFile == nil || err != nil {
-		response.WriteHeader(501)
-		response.Write([]byte(err.Error()))
+		http.Error(response, err.Error(), 500)
 		return
 	}
 
@@ -71,38 +97,40 @@ func upload(response http.ResponseWriter, request *http.Request) {
 	// Get uploaded file from form
 	uploadFile, _, err := request.FormFile("file")
 	if err != nil {
-		response.WriteHeader(501)
-		response.Write([]byte(err.Error()))
+		http.Error(response, err.Error(), 500)
 		return
 	}
 
 	// Copy content from upload to writer
 	_, err = io.Copy(writer, uploadFile)
 	if err != nil {
-		response.WriteHeader(501)
-		response.Write([]byte(err.Error()))
+		http.Error(response, err.Error(), 500)
 		return
 	}
 
 	// Get hex formated hash
-	hash := fmt.Sprintf("%x", hasher.Sum(nil))
+	result.Id = fmt.Sprintf("%x", hasher.Sum(nil))
 
 	// Move temporary to final storage
-	err = os.Rename(tempFile.Name(), flag_storage+"/"+hash)
+	err = os.Rename(tempFile.Name(), fmt.Sprintf("%s/%s", flag_storage, result.Id))
 	if err != nil {
-		response.WriteHeader(501)
-		response.Write([]byte(err.Error()))
+		http.Error(response, err.Error(), 500)
 		return
 	}
-
+    
+    // Write response
 	response.Header().Add("Content-Type", "application/json")
 	response.WriteHeader(200)
-	response.Write([]byte(hash))
+	
+	encoder := json.NewEncoder(response)
+	encoder.Encode(result)
 }
 
 func main() {
 	var err error
 	var listener net.Listener
+
+	log.Println("Starting the box...")
 	
 	log.Println("Settings: laddr = " + flag_laddr)
 	log.Println("Settings: storage = " + flag_storage)
