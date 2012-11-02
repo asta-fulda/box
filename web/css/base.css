@@ -1,0 +1,95 @@
+/*                                                                                                                                                                                                                 
+ * Copyright 2011 Dustin Frisch<fooker@lab.sh>
+ * 
+ * This file is part of box.
+ * 
+ * box is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * box is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with box. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+* {
+		margin: 0;
+		padding: 0;
+		font-family: Helvetica, Verdana, Arial, sans-serif;
+}
+
+body {
+		background-color: #333333;
+}
+
+div#wrapper {
+		
+}
+
+div#header,div#footer {
+		
+}
+
+div#header {
+		padding: 15px 15px 15px 15px;
+		box-shadow: 0 -5px 4px #444444 inset;
+}
+
+div#header a {
+		font-size: 24px;
+		font-weight: bold;
+		color: #FFFFFF;
+}
+
+div#footer {
+		color: #CCCCCC;
+		padding: 30px 15px 15px 15px;
+		clear: both;
+		box-shadow: 0 5px 4px #444444 inset;
+}
+
+div#content {
+		width: 100%;
+		background-color: #CCCCCC;
+		padding: 30px 0;
+}
+
+span.highlight,a {
+		text-decoration: none;
+		color: #7AB51D;
+		font-weight: bold;
+}
+
+#info_links {
+		text-align: right;
+		float: right;
+		padding-bottom: 15px;
+}
+
+div#header div.beta {
+    padding: 10px;
+    margin: 0 20px 0 60px;
+    color: #FF0000;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 15px 5px #FF2222;
+    text-shadow: 0 0 5px #FF2222;
+    display: inline-block;
+    -moz-transform: rotate(33deg);
+    -o-transform: rotate(33deg);
+    -webkit-transform: rotate(33deg);
+    -ms-transform: rotate(33deg);
+    transform: rotate(33deg);
+}
+
+div#footer div.beta {
+		font-size: 10px;
+		width: 20%;
+}

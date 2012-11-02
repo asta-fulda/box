@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!--#include file="head.html" -->
+  
+  <link type="text/css" rel="stylesheet" media="screen" href="css/form.css" />
+</head>
+
+<body>
+  <!--#include file="header.html" -->
+  
+    <div id="content">
+      <div id="form_wrapper">
+        <form id="form" method="post" enctype="multipart/form-data" target="transit" data-bind="attr: { action: target_url }">
+          <div id="row">
+            <div id="column_left">
+              <div id="file_box">
+                <h1>Datei-Informationen</h1>
+                <p>
+                  <label for="file" class="required">Datei</label><br />
+                  <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
+                  
+                  <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: tracking, visible: true"/>
+                </p>
+                <p>
+                  <label for="title">Titel</label><br />
+                  <input id="title" name="title" type="text" data-bind="value: title, readonly: tracking" />
+                </p>
+                <p>
+                  <label for="description">Beschreibung</label><br />
+                  <textarea id="description" name="description" data-bind="value: description, readonly: tracking"></textarea>
+                </p>
+              </div>
+            </div>
+            <div id="column_right">
+              <div id="user_box">
+                <h1>Benutzer-Informationen</h1>
+                <p>
+                  <label for="username" class="required">Benutzer</label><br />
+                  <input id="username" name="username" type="text" data-bind="value: username, readonly: tracking" />
+                </p>
+                <p>
+                  <label for="password" class="required">Password</label><br />
+                  <input id="password" name="password" type="password" data-bind="value: password, readonly: tracking" />
+                </p>
+              </div>
+              <div id="upload_box">
+                <h1>Hochladen</h1>
+                <p>
+                  <input id="terms_accepted" name="terms_accepted" type="checkbox" data-bind="checked: terms_accepted, readonly: tracking" />
+                  <label for="terms_accepted" class="required"><a href="terms.html">AGBs</a> gelesen und akzeptiert</label>
+                </p>
+                <p>
+                  <input type="submit" class="submit" id="submit" value="Hochladen" data-bind="click: start_upload, enable: data_valid, visible: tracking() == null" />
+                   
+                  <span id="progress" style="display:none;" data-bind="visible: tracking() != null, with: tracking">
+                    <span id="progress_bar" data-bind="style: { width: progress }, css: { active: state() == 'uploading' }">&nbsp;</span>
+                    <span id="progress_label" data-bind="text: state_text"></span>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <iframe id="transit" name="transit" style="display: none" data-bind="event: { load: upload_completed }"></iframe>
+    
+  <!--#include file="footer.html" -->
+  
+  <script src="js/form.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+/*                                                                                                                                                                                                                 
+ * Copyright 2011 Dustin Frisch<fooker@lab.sh>
+ * 
+ * This file is part of box.
+ * 
+ * box is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * box is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with box. If not, see <http://www.gnu.org/licenses/>.
+ */
+ 
+div#form_wrapper {
+	display: table;
+	
+	padding: 30px 50px;
+	
+	margin: 0 auto;
+	width: 680px;
+}
+
+div#row {
+	display: table-row;
+}
+
+div#column_left,
+div#column_right {
+	display: table-cell;
+}
+
+div#column_left {
+	width: 415px;
+	padding-right: 15px;
+}
+
+div#column_right {
+	width: 235px;
+
+	padding-left: 15px;
+}
+
+div#form_wrapper p {
+	padding-bottom: 10px;
+}
+
+div#form_wrapper h1 {
+	font-size: 14px;
+	font-weight: bold;
+
+	color: #555555;
+
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+div#form_wrapper p label {
+	font-size: 14px;
+	font-weight: 300;
+
+	color: #555555;
+}
+
+div#form_wrapper p input,
+div#form_wrapper p button,
+div#form_wrapper p textarea,
+span#progress {
+	padding: 10px 10px;
+
+	border-width: 1px;
+	border-style: solid;
+	border-color: #555555;
+	border-radius: 5px 5px 5px 5px;
+
+	font-size: 14px;
+	font-weight: bold;
+
+	width: 100%;
+	
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+div#form_wrapper p input,
+div#form_wrapper p textarea {
+	box-shadow: 1px 3px 4px #555555 inset;
+	
+	background-color: #FFFFFF;
+	color: #555555;
+}
+
+div#form_wrapper p textarea {
+	height: 90px;
+}
+
+div#form_wrapper p input[type=checkbox] {
+  width: auto;
+}
+
+div#form_wrapper p input[type=submit],
+span#progress {
+	background-color: #7AB51D;
+	color: #FFFFFF;
+}
+
+div#form_wrapper p input[type=submit] {
+  box-shadow: 0 2px 4px #555555;
+}
+
+span#progress {
+  box-shadow: 1px 3px 4px #555555 inset;
+}
+
+div#form_wrapper p input[type=submit]:disabled,
+div#form_wrapper p input[readonly],
+div#form_wrapper p textarea[readonly] {
+	background-color: #999999;
+	color: #CCCCCC;
+}
+
+label.required:after {
+	content: "*";
+	
+	font-size: 1.2em;
+	font-weight: bold;
+	
+	color: #7AB51D;
+}
+
+span#progress {
+	position: relative;
+	
+	width: 100%;
+	
+	padding: 0;
+	
+	background-color: #999999;
+	color: #555555;
+    
+    display: inline-block;
+}
+
+span#progress_bar {
+    background-color: #7AB51D;
+    
+    padding: 11px 0;
+    
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: #555555;
+    border-radius: 5px 5px 5px 5px;
+    
+    display: inline-block;
+    
+    background-image: -moz-linear-gradient(45deg,
+                                           rgba(255, 255, 255, 0.15) 025%,
+                                           rgba(255, 255, 255, 0.00) 025%,
+                                           rgba(255, 255, 255, 0.00) 050%,
+                                           rgba(255, 255, 255, 0.15) 050%,
+                                           rgba(255, 255, 255, 0.15) 075%,
+                                           rgba(255, 255, 255, 0.00) 075%,
+                                           rgba(255, 255, 255, 0.00) 100%);
+                                           
+    background-image: -webkit-gradient(linear,
+                                       left bottom,
+                                       right top,
+                                       color-stop(025%, rgba(255, 255, 255, 0.15)),
+                                       color-stop(025%, rgba(255, 255, 255, 0.00)),
+                                       color-stop(050%, rgba(255, 255, 255, 0.00)),
+                                       color-stop(050%, rgba(255, 255, 255, 0.15)),
+                                       color-stop(075%, rgba(255, 255, 255, 0.15)),
+                                       color-stop(075%, rgba(255, 255, 255, 0.00)),
+                                       color-stop(100%, rgba(255, 255, 255, 0.00)));
+                                       
+    background-image: -webkit-linear-gradient(45deg,
+                                              rgba(255, 255, 255, 0.15) 025%,
+                                              rgba(255, 255, 255, 0.00) 025%,
+                                              rgba(255, 255, 255, 0.00) 050%,
+                                              rgba(255, 255, 255, 0.15) 050%,
+                                              rgba(255, 255, 255, 0.15) 075%,
+                                              rgba(255, 255, 255, 0.00) 075%,
+                                              rgba(255, 255, 255, 0.00) 100%);
+                                              
+    background-image: -o-linear-gradient(45deg,
+                                         rgba(255, 255, 255, 0.15) 025%,
+                                         rgba(255, 255, 255, 0.00) 025%,
+                                         rgba(255, 255, 255, 0.00) 050%,
+                                         rgba(255, 255, 255, 0.15) 050%,
+                                         rgba(255, 255, 255, 0.15) 075%,
+                                         rgba(255, 255, 255, 0.00) 075%,
+                                         rgba(255, 255, 255, 0.00) 100%);
+                                         
+    background-image: -ms-linear-gradient(45deg, 
+                                          rgba(255, 255, 255, 0.15) 025%,
+                                          rgba(255, 255, 255, 0.00) 025%,
+                                          rgba(255, 255, 255, 0.00) 050%,
+                                          rgba(255, 255, 255, 0.15) 050%,
+                                          rgba(255, 255, 255, 0.15) 075%,
+                                          rgba(255, 255, 255, 0.00) 075%,
+                                          rgba(255, 255, 255, 0.00) 100%);
+                                          
+    background-image: linear-gradient(45deg,
+                                      rgba(255, 255, 255, 0.15) 025%,
+                                      rgba(255, 255, 255, 0.00) 025%,
+                                      rgba(255, 255, 255, 0.00) 050%,
+                                      rgba(255, 255, 255, 0.15) 050%,
+                                      rgba(255, 255, 255, 0.15) 075%,
+                                      rgba(255, 255, 255, 0.00) 075%,
+                                      rgba(255, 255, 255, 0.00) 100%);
+    
+    background-size: 60px 60px;
+}
+
+@-moz-keyframes progress-bar-animation {
+    0%   { background-position: 0     0; }
+    100% { background-position: 120px 0; }
+}
+
+@-webkit-keyframes progress-bar-animation {
+    0%   { background-position: 0     0; }
+    100% { background-position: 120px 0; }
+}
+
+@-o-keyframes progress-bar-animation {
+    0%   { background-position: 0     0; }
+    100% { background-position: 120px 0; }
+}
+
+@keyframes progress-bar-animation {
+    0%   { background-position: 0     0; }
+    100% { background-position: 120px 0; }
+}
+
+span#progress_bar.active {
+    -moz-animation:     3s linear 0s normal none infinite progress-bar-animation;
+    -webkit-animation:  3s linear 0s normal none infinite progress-bar-animation;
+    -o-animation:       3s linear 0s normal none infinite progress-bar-animation;
+    animation:          3s linear 0s normal none infinite progress-bar-animation;
+}
+
+span#progress_label {
+    position: absolute;
+
+    z-index: 1000;
+    
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    width: 100%;
+
+    padding: 11px 0;
+    
+    text-align: center;
+    
+    display: inline-block;
+}
