@@ -39,12 +39,15 @@ class TrackingModel
         
         @interval = setInterval (() =>
                 # Fetch the current status of the upload
-                $.getJSON @progress_url, (data) =>
-                    # Copy the data to the fields
-                    @size data?.size
-                    @received data?.received
-                    
-                    @state data?.state
+                $.ajax
+                    'url': @progress_url
+                    'dataType': 'json'
+                    'success': (data) =>
+                        # Copy the data to the fields
+                        @size data?.size
+                        @received data?.received
+                        
+                        @state data?.state
             ), 1000
         
         

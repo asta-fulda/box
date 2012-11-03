@@ -43,10 +43,14 @@
       this.state = ko.observable('starting');
       this.progress_url = '/progress?X-Progress-ID=' + this.id;
       this.interval = setInterval((function() {
-        return $.getJSON(_this.progress_url, function(data) {
-          _this.size(data != null ? data.size : void 0);
-          _this.received(data != null ? data.received : void 0);
-          return _this.state(data != null ? data.state : void 0);
+        return $.ajax({
+          'url': _this.progress_url,
+          'dataType': 'json',
+          'success': function(data) {
+            _this.size(data != null ? data.size : void 0);
+            _this.received(data != null ? data.received : void 0);
+            return _this.state(data != null ? data.state : void 0);
+          }
         });
       }), 1000);
       ko.computed(function() {
