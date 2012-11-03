@@ -22,7 +22,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-  "time"
+	"time"
 )
 
 // Error code contained in an ansewer to the client
@@ -30,10 +30,11 @@ type AnswerErrorCode uint32
 
 // All known error codes for an answer to the client
 const (
-	OK                AnswerErrorCode = http.StatusOK
-	AUTH_FAILURE                      = http.StatusUnauthorized
-	NOT_ENOUGHT_SPACE                 = http.StatusRequestEntityTooLarge
-	INTERNAL_ERROR                    = http.StatusInternalServerError
+	OK                 AnswerErrorCode = iota
+	AUTH_FAILURE                       = http.StatusUnauthorized
+	NOT_ENOUGHT_SPACE                  = http.StatusRequestEntityTooLarge
+	TERMS_NOT_ACCEPTED                 = http.StatusExpectationFailed
+	INTERNAL_ERROR                     = http.StatusInternalServerError
 )
 
 // The answer send back to the client
@@ -47,10 +48,10 @@ type Answer struct {
 
 	// Error message - nil if no error occured
 	ErrorMessage string `json:"error_message"`
-	
+
 	// The ID of the upload
 	UploadId string `json:"upload_id"`
-	
+
 	// The time when the upload expires
 	UploadExpiration time.Time `json:"upload_expiration"`
 }
@@ -59,7 +60,16 @@ type Answer struct {
 func (a *Answer) Send(response http.ResponseWriter) (err error) {
 	// Write response header with error code from anser
 	response.Header().Set("Content-Type", "application/json; charset=utf-8")
-	response.WriteHeader(int(a.ErrorCode))
+
+	// Write header
+	if a.Success {
+		// Use status code OK if answer is a success
+		response.WriteHeader(http.StatusOK)
+
+	} else {
+		// Use error code as status code OK if answer is not a success
+		response.WriteHeader(int(a.ErrorCode))
+	}
 
 	// Create JSON encode and write anser to client
 	var encoder *json.Encoder = json.NewEncoder(response)

@@ -20,9 +20,9 @@
 ko.bindingHandlers.readonly =
     update: (element, valueAccessor) ->
         if ko.utils.unwrapObservable valueAccessor()
-            element.setAttribute "readOnly", true
+            element.setAttribute "readonly", true
         else
-            element.removeAttribute "readOnly"
+            element.removeAttribute "readonly"
 
 
 

@@ -28,6 +28,7 @@ import (
 	"net/http"
 	"net/http/fcgi"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -51,8 +52,7 @@ var (
 
 func init() {
 	// Define and parse command line arguments
-	//flag.StringVar(&flag_srv_addr, "srv_addr", "", "interface:port tuple to listen on (default uses fgci provided socket)")
-	flag.StringVar(&flag_srv_addr, "srv_addr", "127.0.0.1:10000", "interface:port tuple to listen on (default uses fgci provided socket)")
+	flag.StringVar(&flag_srv_addr, "srv_addr", "127.0.0.1:9000", "interface:port tuple to listen on (default uses fgci provided socket)")
 	flag.DurationVar(&flag_quota_time, "quota_time", 14*24*time.Hour, "the time how long an upload stays alive before it expires")
 	flag.Uint64Var(&flag_quota_space, "quota_space", 20*1024*1024*1024, "the maximum disk space a single user can fill up")
 }
@@ -61,9 +61,6 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	var err error
 
 	var (
-		// The upload request parsed from the HTTP request
-		upload *UploadRequest
-
 		// The transaction used for the upload
 		transaction *box.Transaction
 
@@ -73,19 +70,17 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 		// The answer send back to the client
 		answer Answer
 
-		// The space currently consumed by the user
-		current_space_consumption uint64
+		// The space consumed by the user after the upload
+		space_consumption uint64
 	)
 
-	// Parse the upload request
-	upload, err = ParseUploadRequest(request)
+	// Parse the data from the POST request
+	err = request.ParseMultipartForm(10 * 1024)
 	if err != nil {
 		goto InternalError
 	}
 
-	defer upload.Close()
-
-	fmt.Printf("Upload: %+v\n", upload)
+  fmt.Printf("Request: %+v\n", request)
 
 	// Open a new transaction
 	transaction, err = database.BeginTransaction()
@@ -96,47 +91,40 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	defer transaction.Rollback()
 
 	// Fill in upload record from the posted values
-	record.Filename = upload.Filename
-	record.Title = upload.Title
-	record.Description = upload.Description
+	record.Filename = request.FormValue("file.name")
+
+	record.Title = request.FormValue("title")
+	record.Description = request.FormValue("description")
+
+	// Check if terms are accepted
+	if request.FormValue("terms_accepted") != "on" {
+		answer.Success = false
+		answer.ErrorCode = TERMS_NOT_ACCEPTED
+		answer.ErrorMessage = "User has not accepted the terms"
+	}
 
 	// Check username and password
-	if upload.Username != upload.Password {
+	if request.FormValue("username") != request.FormValue("password") {
 		answer.Success = false
 		answer.ErrorCode = AUTH_FAILURE
 		answer.ErrorMessage = "Username and password do not match"
 	}
 
 	// Fill in the username
-	record.User = upload.Username
+	record.User = request.FormValue("username")
 
 	// Fill in creation and expiration time
 	record.Creation = time.Now()
 	record.Expiration = record.Creation.Add(flag_quota_time)
 
-	// Fetch currently consumed space for user
-	current_space_consumption, err = transaction.QuerySpaceConsumptionFor(upload.Username)
-	if err != nil {
-		goto InternalError
-	}
-
-	// Check if user has enough free space - for the real file size
-	if current_space_consumption+upload.Temporary.GetSize() > flag_quota_space {
-		answer.Success = false
-		answer.ErrorCode = NOT_ENOUGHT_SPACE
-		answer.ErrorMessage = "Not enought space left for upload"
-
-		goto End
-	}
-
 	// Fill in size of the upload
-	record.Size = upload.Temporary.GetSize()
-
-	// Make the temporary persistent
-	record.Id, err = upload.Temporary.Settle()
+	record.Size, err = strconv.ParseUint(request.FormValue("file.size"), 10, 64)
 	if err != nil {
 		goto InternalError
 	}
+
+	// Fill in ID of the upload
+	record.Id = request.FormValue("file.hash")
 
 	fmt.Printf("Record: %+v\n", record)
 
@@ -146,12 +134,35 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 		goto InternalError
 	}
 
+	// Fetch currently consumed space for user
+	space_consumption, err = transaction.QuerySpaceConsumptionFor(record.User)
+	if err != nil {
+		goto InternalError
+	}
+
+  fmt.Printf("space_consumption: %u\n", space_consumption)
+
+	// Check if user has enough free space - for the real file size
+	if space_consumption > flag_quota_space {
+		answer.Success = false
+		answer.ErrorCode = NOT_ENOUGHT_SPACE
+		answer.ErrorMessage = "Not enought space left for upload"
+
+		goto End
+	}
+
+	// Move the file from the upload to the storage
+	err = storage.Add(record.Id, request.FormValue("file.path"), true)
+	if err != nil {
+		goto InternalError
+	}
+
 	// Commit the upload - we are done
 	err = transaction.Commit()
 	if err != nil {
 		goto InternalError
 	}
-	
+
 	// Build final answer for client
 	answer.Success = true
 	answer.UploadId = record.Id
