@@ -140,8 +140,6 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 		goto InternalError
 	}
 
-  fmt.Printf("space_consumption: %u\n", space_consumption)
-
 	// Check if user has enough free space - for the real file size
 	if space_consumption > flag_quota_space {
 		answer.Success = false
