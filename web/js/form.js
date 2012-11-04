@@ -21,7 +21,7 @@
 
 
 (function() {
-  var Model, TrackingModel;
+  var AnswerModel, ErrorModel, Model, TrackingModel;
 
   ko.bindingHandlers.readonly = {
     update: function(element, valueAccessor) {
@@ -92,6 +92,31 @@
 
   })();
 
+  AnswerModel = (function() {
+
+    function AnswerModel(data) {
+      this.id = data.upload_id;
+      this.user = data.upload_user;
+      this.file = data.upload_file;
+      this.size = data.upload_size;
+      this.expiration = data.upload_expiration;
+      this.url = "https://box.hs-fulda.org/download/" + this.id + "?dl=" + this.file;
+    }
+
+    return AnswerModel;
+
+  })();
+
+  ErrorModel = (function() {
+
+    function ErrorModel(data) {
+      this.code = data.error_code;
+    }
+
+    return ErrorModel;
+
+  })();
+
   Model = (function() {
 
     function Model() {
@@ -118,6 +143,8 @@
         return _this.file() !== '' && _this.username() !== '' && _this.password() !== '' && _this.terms_accepted();
       });
       this.tracking = ko.observable(null);
+      this.answer = ko.observable(null);
+      this.error = ko.observable(null);
     }
 
     Model.prototype.open_file_chooser = function() {
@@ -130,13 +157,17 @@
     };
 
     Model.prototype.upload_completed = function(data, event) {
-      var answer, _ref;
+      var _ref;
       if ((_ref = this.tracking()) != null) {
         _ref.state('done');
       }
-      answer = event.target.contentDocument.body.innerText || event.target.contentDocument.body.textContent;
-      console.log(answer);
-      return alert(answer);
+      data = JSON.parse(event.target.contentDocument.body.innerText || event.target.contentDocument.body.textContent);
+      console.log(data);
+      if (data.error_code) {
+        return this.error(new ErrorModel(data));
+      } else {
+        return this.answer(new AnswerModel(data));
+      }
     };
 
     return Model;

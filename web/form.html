@@ -11,6 +11,69 @@
   <!--# include file="header.html" -->
   
     <div id="content">
+      <!-- ko with: answer -->
+		    <div id="popup_completed">
+		      <div id="popup_completed_title">Datei hochgeladen</div>
+		      <div id="popup_completed_content">
+		        <p>Die Datei wurde erfolgreich hochgeladen und ver&ouml;ffentlicht.
+		           Die Datei ist nun f&uuml;r einen gewissen Zeitraum verf&uuml;gbar
+		           und kann nun heruntergeladen werden.
+		        </p>
+		        
+		        <dl>
+	            <dt>Dateiname</dt>
+	            <dd><span data-bind="text: file">&nbsp;</span></dd>
+	            
+	            <dt>Benutzer</dt>
+	            <dd><span data-bind="text: user">&nbsp;</span></dd>
+	            
+	            <dt>Gr&ouml;&szlig;e</dt>
+	            <dd><span data-bind="text: Math.floor(size / 1024 / 1024 * 100) / 100">&nbsp;</span> MB</dd>
+	            
+	            <dt>G&uuml;ltig bis</dt>
+	            <dd><span data-bind="text: expiration">&nbsp;</span></dd>
+	          </dl>
+	          
+		        <p>Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
+		          <code data-bind="text: url"></code>
+		        </p>
+		        
+		        <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:<br />
+			      <div style="text-align:center;">
+			        <a data-bind="attr: { href: 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) }"
+			           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+			          <img class="share_botton"
+			               src="/img/facebook.png"
+			                 alt="Share on Facebook" />
+			        </a>
+			        
+			        <a data-bind="attr: { href: 'https://plus.google.com/share?url=' + encodeURIComponent(url) }"
+			           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+			          <img class="share_botton"
+			               src="/img/gplus.png"
+			               alt="Share on Google+" />
+			        </a>
+			        
+			        <a data-bind="attr: { href: 'https://twitter.com/share?url=' + encodeURIComponent(url) }"
+			           onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+			            <img class="share_botton"
+			                 src="/img/twitter.png"
+			                 alt="Share on Twitter" />
+			        </a>
+			      </div>
+		      </div>
+		    </div>
+      <!-- /ko -->
+      
+      <!-- ko with: error -->
+        <div id="popup_error">
+          <div id="popup_error_title">Fehler</div>
+          <div id="popup_error_content">
+            <p data-bind="text: code"></p>
+          </div>
+        </div>
+      <!-- /ko -->
+      
       <div id="form_wrapper">
         <form id="form" method="post" enctype="multipart/form-data" target="transit" data-bind="attr: { action: target_url }">
           <div id="row">

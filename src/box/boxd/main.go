@@ -98,16 +98,16 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if terms are accepted
 	if request.FormValue("terms_accepted") != "on" {
-		answer.Success = false
 		answer.ErrorCode = TERMS_NOT_ACCEPTED
-		answer.ErrorMessage = "User has not accepted the terms"
+
+    goto End
 	}
 
 	// Check username and password
 	if request.FormValue("username") != request.FormValue("password") {
-		answer.Success = false
 		answer.ErrorCode = AUTH_FAILURE
-		answer.ErrorMessage = "Username and password do not match"
+
+    goto End
 	}
 
 	// Fill in the username
@@ -142,9 +142,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if user has enough free space - for the real file size
 	if space_consumption > flag_quota_space {
-		answer.Success = false
 		answer.ErrorCode = NOT_ENOUGHT_SPACE
-		answer.ErrorMessage = "Not enought space left for upload"
 
 		goto End
 	}
@@ -162,16 +160,17 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	}
 
 	// Build final answer for client
-	answer.Success = true
 	answer.UploadId = record.Id
+  answer.UploadUser = record.User
+	answer.UploadFilename = record.Filename
+	answer.UploadSize = record.Size
 	answer.UploadExpiration = record.Expiration
 
 	goto End
 
 InternalError:
-	answer.Success = false
 	answer.ErrorCode = INTERNAL_ERROR
-	answer.ErrorMessage = err.Error()
+  fmt.Printf("Internal error: %+v\n", err)
 
 End:
 	// Send the anser to the client

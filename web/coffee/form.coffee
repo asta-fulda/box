@@ -85,7 +85,25 @@ class TrackingModel
                     @progress()
                 else
                     '...'
+
+
+
+class AnswerModel
+    constructor: (data) ->
+        @id = data.upload_id
+        @user = data.upload_user
+        @file = data.upload_file
+        @size = data.upload_size
+        @expiration = data.upload_expiration
         
+        @url = "https://box.hs-fulda.org/download/#{@id}?dl=#{@file}"
+
+
+
+class ErrorModel
+    constructor: (data) ->
+        @code = data.error_code
+
 
 
 class Model
@@ -112,6 +130,11 @@ class Model
         
         # The upload tracking object
         @tracking = ko.observable null
+        
+        # The answer from the upload
+        @answer = ko.observable null
+        
+        @error = ko.observable null
     
     
     # Open the file chooser dialog
@@ -132,10 +155,13 @@ class Model
         # We got a result from the upload - finish tracking
         @tracking()?.state 'done'
         
-        answer = event.target.contentDocument.body.innerText or event.target.contentDocument.body.textContent
+        data = JSON.parse event.target.contentDocument.body.innerText or event.target.contentDocument.body.textContent
+        console.log data
         
-        console.log answer
-        alert answer
+        if data.error_code
+            @error new ErrorModel data
+        else
+            @answer new AnswerModel data
 
 
 

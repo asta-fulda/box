@@ -40,18 +40,21 @@ const (
 // The answer send back to the client
 type Answer struct {
 
-	// Request was successfull
-	Success bool `json:"success"`
-
 	// Error code
 	ErrorCode AnswerErrorCode `json:"error_code"`
 
-	// Error message - nil if no error occured
-	ErrorMessage string `json:"error_message"`
-
 	// The ID of the upload
 	UploadId string `json:"upload_id"`
-
+  
+  // The user of the upload
+  UploadUser string `json:"upload_user"`
+	
+	// The filename of the upload
+	UploadFilename string `json:"upload_file"`
+	
+	// The size of the upload
+	UploadSize uint64 `json:"upload_size"`
+	
 	// The time when the upload expires
 	UploadExpiration time.Time `json:"upload_expiration"`
 }
@@ -62,7 +65,7 @@ func (a *Answer) Send(response http.ResponseWriter) (err error) {
 	response.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	// Write header
-	if a.Success {
+	if a.ErrorCode == OK {
 		// Use status code OK if answer is a success
 		response.WriteHeader(http.StatusOK)
 
