@@ -162,7 +162,6 @@
         _ref.state('done');
       }
       data = JSON.parse(event.target.contentDocument.body.innerText || event.target.contentDocument.body.textContent);
-      console.log(data);
       if (data.error_code) {
         return this.error(new ErrorModel(data));
       } else {

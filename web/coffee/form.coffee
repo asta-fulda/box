@@ -155,9 +155,10 @@ class Model
         # We got a result from the upload - finish tracking
         @tracking()?.state 'done'
         
+        # Get the data from the iframe
         data = JSON.parse event.target.contentDocument.body.innerText or event.target.contentDocument.body.textContent
-        console.log data
         
+        # Create error or answer depending on answer from server
         if data.error_code
             @error new ErrorModel data
         else
