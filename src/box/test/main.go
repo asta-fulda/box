@@ -22,7 +22,6 @@ package main
 import (
 	"box"
 	"fmt"
-	"log"
 //	"math/rand"
 //	"time"
 )
@@ -38,7 +37,7 @@ func main() {
 	// Connect to database
 	database, err = box.ConnectDatabase()
 	if err != nil {
-		log.Fatal(err)
+    box.LogFatal("%v", err)
 	}
 
 	defer database.Close()
@@ -48,7 +47,7 @@ func main() {
 	
 	transaction, err = database.BeginTransaction()
 	if err != nil {
-    log.Fatal(err)
+    box.LogFatal("%v", err)
   }
   
   defer transaction.Rollback()
@@ -90,7 +89,7 @@ func main() {
 
 	size, err := transaction.QuerySpaceConsumptionFor("asd")
 	if err != nil {
-		log.Fatal(err)
+    box.LogFatal("%v", err)
 	}
 
 	fmt.Printf("%+v", size)

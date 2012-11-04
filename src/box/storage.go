@@ -122,6 +122,8 @@ func (st *Storage) Add(id string, filename string, move bool) (err error) {
 	} else {
 		err = st.copy(target, filename)
 	}
+	
+	LogDebug("File added to storage: %s", target)
 
 	return
 }
@@ -133,6 +135,8 @@ func (st *Storage) Remove(id string) (err error) {
 
 	// Remove the file
 	err = os.Remove(path)
+  
+  LogDebug("File removed from storage: %s", path)
 
 	return
 }

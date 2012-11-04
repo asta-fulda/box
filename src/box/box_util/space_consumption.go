@@ -47,6 +47,9 @@ func space_consumption(database *box.Database, arguments []string) (err error) {
 
 		// Execute the query
 		space, err = transaction.QuerySpaceConsumption()
+		if err != nil {
+      return
+    }
 
 		// Print result
 		for user, space := range space {
@@ -61,6 +64,9 @@ func space_consumption(database *box.Database, arguments []string) (err error) {
 
 		// Execute the query
 		space, err = transaction.QuerySpaceConsumptionFor(user)
+		if err != nil {
+      return
+    }
 
 		// Print result
 		fmt.Printf("%s %d\n",

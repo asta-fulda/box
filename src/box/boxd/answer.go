@@ -30,11 +30,11 @@ type AnswerErrorCode uint32
 
 // All known error codes for an answer to the client
 const (
-	OK                 AnswerErrorCode = iota
-	AUTH_FAILURE                       = http.StatusUnauthorized
-	NOT_ENOUGHT_SPACE                  = http.StatusRequestEntityTooLarge
-	TERMS_NOT_ACCEPTED                 = http.StatusExpectationFailed
-	INTERNAL_ERROR                     = http.StatusInternalServerError
+	ANSWER_ERROR_CODE_OK                 AnswerErrorCode = iota
+	ANSWER_ERROR_CODE_AUTH_FAILURE                       = http.StatusUnauthorized
+	ANSWER_ERROR_CODE_NOT_ENOUGHT_SPACE                  = http.StatusRequestEntityTooLarge
+	ANSWER_ERROR_CODE_TERMS_NOT_ACCEPTED                 = http.StatusExpectationFailed
+	ANSWER_ERROR_CODE_INTERNAL_ERROR                     = http.StatusInternalServerError
 )
 
 // The answer send back to the client
@@ -45,16 +45,16 @@ type Answer struct {
 
 	// The ID of the upload
 	UploadId string `json:"upload_id"`
-  
-  // The user of the upload
-  UploadUser string `json:"upload_user"`
-	
+
+	// The user of the upload
+	UploadUser string `json:"upload_user"`
+
 	// The filename of the upload
 	UploadFilename string `json:"upload_file"`
-	
+
 	// The size of the upload
 	UploadSize uint64 `json:"upload_size"`
-	
+
 	// The time when the upload expires
 	UploadExpiration time.Time `json:"upload_expiration"`
 }
@@ -65,7 +65,7 @@ func (a *Answer) Send(response http.ResponseWriter) (err error) {
 	response.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	// Write header
-	if a.ErrorCode == OK {
+	if a.ErrorCode == ANSWER_ERROR_CODE_OK {
 		// Use status code OK if answer is a success
 		response.WriteHeader(http.StatusOK)
 

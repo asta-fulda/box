@@ -22,7 +22,6 @@
 import (
 	"box"
 	"flag"
-	"log"
 )
 
 // Callback for commands
@@ -43,21 +42,21 @@ func main() {
   box.ParseFlags()
 
 	if flag.NArg() < 1 {
-		log.Fatal("Not enought arguments. Specify utility command to execute.")
+		box.LogFatal("Not enought arguments. Specify utility command to execute.")
 	}
 
 	// Find the command to call
 	var command_name string = flag.Arg(0)
 	var command Command = commands[command_name]
 	if command == nil {
-		log.Fatalf("Command '%s' not found.", command_name)
+		box.LogFatal("Command '%s' not found.", command_name)
 	}
 
 	// Connect to database
 	var database *box.Database
 	database, err = box.ConnectDatabase()
 	if err != nil {
-		log.Fatal(err)
+		box.LogFatal("%v", err)
 	}
 
 	defer database.Close()
@@ -65,6 +64,6 @@ func main() {
 	// Call the command
 	err = command(database, flag.Args()[1:])
 	if err != nil {
-    log.Fatal(err)
+    box.LogFatal("%v", err)
   }
 }

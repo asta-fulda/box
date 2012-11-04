@@ -47,6 +47,9 @@ func expired_uploads(database *box.Database, arguments []string) (err error) {
 
 		// Execute the query
 		ids, err = transaction.QueryExpiredUploads()
+		if err != nil {
+			return
+		}
 
 		// Print result
 		for _, id := range ids {

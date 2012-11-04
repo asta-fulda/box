@@ -16,82 +16,69 @@
  * You should have received a copy of the GNU General Public License
  * along with box. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 package main
 
 import (
 	"box"
-	"fmt"
-	"log"
-//	"math/rand"
-//	"time"
+	"os"
 )
 
 func main() {
 	var err error
-	
+
 	box.ParseFlags()
 
-	// Database connection
-	var database *box.Database
+	// Box connections
+	var (
+		database *box.Database
+
+		storage *box.Storage
+	)
 
 	// Connect to database
 	database, err = box.ConnectDatabase()
 	if err != nil {
-		log.Fatal(err)
+		box.LogFatal("%v", err)
 	}
 
 	defer database.Close()
-	
-	// Open transaction
-	var transaction *box.Transaction
-	
-	transaction, err = database.BeginTransaction()
-	if err != nil {
-    log.Fatal(err)
-  }
-  
-  defer transaction.Rollback()
 
-	//	for {
-	//		// Generate a random string
-	//		var raw_id []byte = make([]byte, 16)
-	//		for i := 0; i < 16; i++ {
-	//			raw_id[i] = byte(rand.Int())
-	//		}
-	//
-	//		id := fmt.Sprintf("%x", raw_id)
-	//
-	//		t := time.Unix(int64(rand.Int31()), rand.Int63())
-	//
-	//		// Insert some elements
-	//		record := box.UploadRecord{
-	//			Id: id,
-	//
-	//			Filename:    fmt.Sprintf("%s.txt", id),
-	//			Title:       fmt.Sprintf("title_%s", id),
-	//			Description: fmt.Sprintf("description_%s", id),
-	//
-	//			User: fmt.Sprintf("fd%04d", rand.Intn(9999)),
-	//
-	//			Creation:   t,
-	//			Expiration: t.Add(14 * 24 * time.Hour),
-	//
-	//			Size: rand.Int63(),
-	//		}
-	//
-	//		err = database.Insert(record)
-	//		if err != nil {
-	//			log.Fatal(err)
-	//		}
-	//
-	//		fmt.Printf("%+v\n", record)
-	//	}
-
-	size, err := transaction.QuerySpaceConsumptionFor("hans")
+	// Connect to storage
+	storage, err = box.ConnectStorage()
 	if err != nil {
-		log.Fatal(err)
+		box.LogFatal("%v", err)
 	}
 
-	fmt.Printf("%+v", size)
+	defer storage.Close()
+
+	// Open transaction
+	var transaction *box.Transaction
+
+	transaction, err = database.BeginTransaction()
+	if err != nil {
+		box.LogFatal("%v", err)
+	}
+
+	defer transaction.Rollback()
+
+	// Find all expired uploads
+	var ids []string
+
+	ids, err = transaction.QueryExpiredUploads()
+	if err != nil {
+		box.LogFatal("%v", err)
+	}
+
+	// Remove all expired uploads from storage
+	for _, id := range ids {
+		box.LogDebug("About to remove file: %s", id)
+
+		err = storage.Remove(id)
+		if err != os.ErrNotExist {
+			// File is already gone - ignore it
+		} else if err != nil {
+			box.LogError("%v", err)
+		}
+	}
 }

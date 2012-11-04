@@ -22,8 +22,6 @@ package main
 import (
 	"box"
 	"flag"
-	"fmt"
-	"log"
 	"net"
 	"net/http"
 	"net/http/fcgi"
@@ -75,12 +73,12 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	)
 
 	// Parse the data from the POST request
+  box.LogDebug("Request: %+v", request)
+
 	err = request.ParseMultipartForm(10 * 1024)
 	if err != nil {
 		goto InternalError
 	}
-
-  fmt.Printf("Request: %+v\n", request)
 
 	// Open a new transaction
 	transaction, err = database.BeginTransaction()
@@ -98,14 +96,14 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if terms are accepted
 	if request.FormValue("terms_accepted") != "on" {
-		answer.ErrorCode = TERMS_NOT_ACCEPTED
+		answer.ErrorCode = ANSWER_ERROR_CODE_TERMS_NOT_ACCEPTED
 
     goto End
 	}
 
 	// Check username and password
 	if request.FormValue("username") != request.FormValue("password") {
-		answer.ErrorCode = AUTH_FAILURE
+		answer.ErrorCode = ANSWER_ERROR_CODE_AUTH_FAILURE
 
     goto End
 	}
@@ -126,9 +124,9 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	// Fill in ID of the upload
 	record.Id = request.FormValue("file.hash")
 
-	fmt.Printf("Record: %+v\n", record)
-
 	// Insert upload record into database
+	box.LogDebug("Record: %+v", record)
+	
 	err = transaction.Insert(record)
 	if err != nil {
 		goto InternalError
@@ -142,7 +140,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if user has enough free space - for the real file size
 	if space_consumption > flag_quota_space {
-		answer.ErrorCode = NOT_ENOUGHT_SPACE
+		answer.ErrorCode = ANSWER_ERROR_CODE_NOT_ENOUGHT_SPACE
 
 		goto End
 	}
@@ -169,14 +167,17 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	goto End
 
 InternalError:
-	answer.ErrorCode = INTERNAL_ERROR
-  fmt.Printf("Internal error: %+v\n", err)
+  // Return a internal error
+	box.LogError("Internal error: %v", err)
+	
+	answer.ErrorCode = ANSWER_ERROR_CODE_INTERNAL_ERROR
 
 End:
 	// Send the anser to the client
+	box.LogDebug("Answer: %+v", answer)
+	
 	answer.Send(response)
 
-	fmt.Printf("Answer: %+v\n", answer)
 
 	return
 }
@@ -192,7 +193,7 @@ func main() {
 	// Connect to database
 	database, err = box.ConnectDatabase()
 	if err != nil {
-		log.Fatal(err)
+    box.LogFatal("%v", err)
 	}
 
 	defer database.Close()
@@ -200,10 +201,18 @@ func main() {
 	// Connect to storage
 	storage, err = box.ConnectStorage()
 	if err != nil {
-		log.Fatal(err)
+    box.LogFatal("%v", err)
 	}
 
 	defer storage.Close()
+  
+  // Dump runtime information
+  box.LogInfo("Starting boxd")
+  box.LogDebug("  Storage  - Data: %s", storage.Data())
+  box.LogDebug("  Database - Host: %s", database.Host())
+  box.LogDebug("  Database - Port: %s", database.Port())
+  box.LogDebug("  Database - Name: %s", database.Name())
+  box.LogDebug("  Database - User: %s", database.User())
 
 	// Create web server communication channel
 	if flag_srv_addr == "" {
@@ -213,7 +222,7 @@ func main() {
 		socket = os.NewFile(0, "")
 		listener, err = net.FileListener(socket)
 		if err != nil {
-			log.Fatal(err)
+    box.LogFatal("%v", err)
 		}
 
 		defer socket.Close()
@@ -223,7 +232,7 @@ func main() {
 		// Create listener to network socket
 		listener, err = net.Listen("tcp", flag_srv_addr)
 		if err != nil {
-			log.Fatal(err)
+    box.LogFatal("%v", err)
 		}
 
 		defer listener.Close()
@@ -235,6 +244,6 @@ func main() {
 	// Start serving
 	err = fcgi.Serve(listener, handler)
 	if err != nil {
-		log.Fatal(err)
+		box.LogFatal("%v", err)
 	}
 }
