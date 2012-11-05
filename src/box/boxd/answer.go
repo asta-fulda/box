@@ -30,18 +30,26 @@ type AnswerErrorCode uint32
 
 // All known error codes for an answer to the client
 const (
-	ANSWER_ERROR_CODE_OK                 AnswerErrorCode = iota
 	ANSWER_ERROR_CODE_AUTH_FAILURE                       = http.StatusUnauthorized
 	ANSWER_ERROR_CODE_NOT_ENOUGHT_SPACE                  = http.StatusRequestEntityTooLarge
 	ANSWER_ERROR_CODE_TERMS_NOT_ACCEPTED                 = http.StatusExpectationFailed
 	ANSWER_ERROR_CODE_INTERNAL_ERROR                     = http.StatusInternalServerError
 )
 
+// The error send back to the client
+type AnswerError struct {
+	// The error code
+	Code AnswerErrorCode `json:"code"`
+
+	// The error message
+	Message string `json:"message"`
+}
+
 // The answer send back to the client
 type Answer struct {
 
-	// Error code
-	ErrorCode AnswerErrorCode `json:"error_code"`
+	// The error
+	Error *AnswerError `json:"error"`
 
 	// The ID of the upload
 	UploadId string `json:"upload_id"`
@@ -65,13 +73,13 @@ func (a *Answer) Send(response http.ResponseWriter) (err error) {
 	response.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	// Write header
-	if a.ErrorCode == ANSWER_ERROR_CODE_OK {
-		// Use status code OK if answer is a success
-		response.WriteHeader(http.StatusOK)
+	if a.Error != nil {
+		// Use error code as status code OK if answer is not a success
+		response.WriteHeader(int(a.Error.Code))
 
 	} else {
-		// Use error code as status code OK if answer is not a success
-		response.WriteHeader(int(a.ErrorCode))
+		// Use status code OK if answer is a success
+		response.WriteHeader(http.StatusOK)
 	}
 
 	// Create JSON encode and write anser to client

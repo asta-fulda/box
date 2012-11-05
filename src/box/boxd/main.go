@@ -73,7 +73,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	)
 
 	// Parse the data from the POST request
-  box.LogDebug("Request: %+v", request)
+	box.LogDebug("Request: %+v", request)
 
 	err = request.ParseMultipartForm(10 * 1024)
 	if err != nil {
@@ -96,16 +96,12 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if terms are accepted
 	if request.FormValue("terms_accepted") != "on" {
-		answer.ErrorCode = ANSWER_ERROR_CODE_TERMS_NOT_ACCEPTED
+		answer.Error = &AnswerError{
+      Code:    ANSWER_ERROR_CODE_TERMS_NOT_ACCEPTED,
+      Message: "Terms not accepted",
+    }
 
-    goto End
-	}
-
-	// Check username and password
-	if request.FormValue("username") != request.FormValue("password") {
-		answer.ErrorCode = ANSWER_ERROR_CODE_AUTH_FAILURE
-
-    goto End
+		goto End
 	}
 
 	// Fill in the username
@@ -126,7 +122,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Insert upload record into database
 	box.LogDebug("Record: %+v", record)
-	
+
 	err = transaction.Insert(record)
 	if err != nil {
 		goto InternalError
@@ -140,7 +136,10 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Check if user has enough free space - for the real file size
 	if space_consumption > flag_quota_space {
-		answer.ErrorCode = ANSWER_ERROR_CODE_NOT_ENOUGHT_SPACE
+		answer.Error = &AnswerError{
+			Code:    ANSWER_ERROR_CODE_NOT_ENOUGHT_SPACE,
+			Message: "Not enought space",
+		}
 
 		goto End
 	}
@@ -159,7 +158,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Build final answer for client
 	answer.UploadId = record.Id
-  answer.UploadUser = record.User
+	answer.UploadUser = record.User
 	answer.UploadFilename = record.Filename
 	answer.UploadSize = record.Size
 	answer.UploadExpiration = record.Expiration
@@ -167,17 +166,19 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	goto End
 
 InternalError:
-  // Return a internal error
+	// Return a internal error
 	box.LogError("Internal error: %v", err)
-	
-	answer.ErrorCode = ANSWER_ERROR_CODE_INTERNAL_ERROR
+
+	answer.Error = &AnswerError{
+		Code:    ANSWER_ERROR_CODE_INTERNAL_ERROR,
+		Message: err.Error(),
+	}
 
 End:
 	// Send the anser to the client
 	box.LogDebug("Answer: %+v", answer)
-	
-	answer.Send(response)
 
+	answer.Send(response)
 
 	return
 }
@@ -193,7 +194,7 @@ func main() {
 	// Connect to database
 	database, err = box.ConnectDatabase()
 	if err != nil {
-    box.LogFatal("%v", err)
+		box.LogFatal("%v", err)
 	}
 
 	defer database.Close()
@@ -201,18 +202,18 @@ func main() {
 	// Connect to storage
 	storage, err = box.ConnectStorage()
 	if err != nil {
-    box.LogFatal("%v", err)
+		box.LogFatal("%v", err)
 	}
 
 	defer storage.Close()
-  
-  // Dump runtime information
-  box.LogInfo("Starting boxd")
-  box.LogDebug("  Storage  - Data: %s", storage.Data())
-  box.LogDebug("  Database - Host: %s", database.Host())
-  box.LogDebug("  Database - Port: %s", database.Port())
-  box.LogDebug("  Database - Name: %s", database.Name())
-  box.LogDebug("  Database - User: %s", database.User())
+
+	// Dump runtime information
+	box.LogInfo("Starting boxd")
+	box.LogDebug("  Storage  - Data: %s", storage.Data())
+	box.LogDebug("  Database - Host: %s", database.Host())
+	box.LogDebug("  Database - Port: %s", database.Port())
+	box.LogDebug("  Database - Name: %s", database.Name())
+	box.LogDebug("  Database - User: %s", database.User())
 
 	// Create web server communication channel
 	if flag_srv_addr == "" {
@@ -222,7 +223,7 @@ func main() {
 		socket = os.NewFile(0, "")
 		listener, err = net.FileListener(socket)
 		if err != nil {
-    box.LogFatal("%v", err)
+			box.LogFatal("%v", err)
 		}
 
 		defer socket.Close()
@@ -232,7 +233,7 @@ func main() {
 		// Create listener to network socket
 		listener, err = net.Listen("tcp", flag_srv_addr)
 		if err != nil {
-    box.LogFatal("%v", err)
+			box.LogFatal("%v", err)
 		}
 
 		defer listener.Close()
