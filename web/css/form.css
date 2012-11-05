@@ -60,16 +60,16 @@ div#form_wrapper h1 {
 	padding-bottom: 10px;
 }
 
-div#form_wrapper p label {
+label {
 	font-size: 14px;
 	font-weight: 300;
 
 	color: #555555;
 }
 
-div#form_wrapper p input,
-div#form_wrapper p button,
-div#form_wrapper p textarea,
+input,
+button,
+textarea,
 span#progress {
 	padding: 10px 10px;
 
@@ -81,36 +81,40 @@ span#progress {
 	font-size: 14px;
 	font-weight: bold;
 
-	width: 100%;
-	
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
-div#form_wrapper p input,
-div#form_wrapper p textarea {
+div#form_wrapper input,
+div#form_wrapper button,
+div#form_wrapper textarea {
+	width: 100%;
+}
+
+input,
+textarea {
 	box-shadow: 1px 3px 4px #555555 inset;
 	
 	background-color: #FFFFFF;
 	color: #555555;
 }
 
-div#form_wrapper p textarea {
+textarea {
 	height: 90px;
 }
 
-div#form_wrapper p input[type=checkbox] {
+input[type=checkbox] {
   width: auto;
 }
 
-div#form_wrapper p input[type=submit],
+input[type=submit],
 span#progress {
 	background-color: #7AB51D;
 	color: #FFFFFF;
 }
 
-div#form_wrapper p input[type=submit] {
+input[type=submit] {
   box-shadow: 0 2px 4px #555555;
 }
 
@@ -118,9 +122,9 @@ span#progress {
   box-shadow: 1px 3px 4px #555555 inset;
 }
 
-div#form_wrapper p input[type=submit]:disabled,
-div#form_wrapper p input[readonly],
-div#form_wrapper p textarea[readonly] {
+input[type=submit]:disabled,
+input[readonly],
+textarea[readonly] {
 	background-color: #999999;
 	color: #CCCCCC;
 }
@@ -264,7 +268,7 @@ span#progress_label {
   display: inline-block;
 }
 
-div#popup_completed {
+div.popup {
   position: absolute;
   
   left: 0;
@@ -286,7 +290,7 @@ div#popup_completed {
   z-index: 2000;
 }
 
-div#popup_completed > *:first-child {
+div.popup > *:first-child {
   border-bottom-width: 2px;
   border-bottom-style: solid;
   border-bottom-color: #555555;
@@ -359,23 +363,34 @@ div#popup_completed > *:first-child {
   
   text-align: center;
   
-  background-color: #7AB51D;
   color: #333333;
 }
 
-div#popup_completed > div {
+div.popup > *:last-child {
+	border-top-width: 2px;
+  border-top-style: solid;
+  border-top-color: #555555;
+  
+  border-radius: 0 0 8px 8px;
+  
+  background-color: #CCCCCC;
+  
+  text-align: right;
+}
+
+div.popup > div {
   padding: 10px 10px;
   
   color: #555555;
 }
 
-div#popup_completed p,
-div#popup_completed dl {
+div.popup p,
+div.popup dl {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
-div#popup_completed code {
+div.popup code {
   font-family: monospace;
   font-weight: bold;
   
@@ -401,7 +416,7 @@ div#popup_completed code {
   box-shadow: 3px 3px 4px #000000 inset;
 }
 
-div#popup_completed dl dt {
+div.popup dl dt {
 	font-weight: bold;
 	
 	clear: left;
@@ -410,9 +425,17 @@ div#popup_completed dl dt {
 	width: 7em;
 }
 
-div#popup_completed dl dt:after {
+div.popup dl dt:after {
 	content: ':';
   font-weight: bold;
+}
+
+div.popup.completed > *:first-child {
+  background-color: #7AB51D;
+}
+
+div.popup.error > *:first-child {
+  background-color: #D51D0D;
 }
 
 img.share_botton {
@@ -422,107 +445,3 @@ img.share_botton {
 		margin: 5px 5px;
 }
 
-div#popup_error {
-  position: absolute;
-  
-  left: 0;
-  right: 0;
-  
-  width: 600px;
-  
-  margin: auto auto;
-  
-  background-color: #FFFFFF;
-  
-  border-width: 2px;
-  border-style: solid;
-  border-color: #555555;
-  border-radius: 10px 10px 10px 10px;
-  
-  box-shadow: 0 0 80px 40px #333333;
-  
-  z-index: 2000;
-}
-
-div#popup_error > *:first-child {
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-bottom-color: #555555;
-  
-  border-radius: 8px 8px 0 0;
-  
-  padding-top: 15px;
-  padding-bottom: 15px;
-  
-  font-size: 28px;
-  font-weight: bold;
-  
-  background-image: -moz-linear-gradient(45deg,
-                                         rgba(255, 255, 255, 0.15) 025%,
-                                         rgba(255, 255, 255, 0.00) 025%,
-                                         rgba(255, 255, 255, 0.00) 050%,
-                                         rgba(255, 255, 255, 0.15) 050%,
-                                         rgba(255, 255, 255, 0.15) 075%,
-                                         rgba(255, 255, 255, 0.00) 075%,
-                                         rgba(255, 255, 255, 0.00) 100%);
-                                         
-  background-image: -webkit-gradient(linear,
-                                     left bottom,
-                                     right top,
-                                     color-stop(025%, rgba(255, 255, 255, 0.15)),
-                                     color-stop(025%, rgba(255, 255, 255, 0.00)),
-                                     color-stop(050%, rgba(255, 255, 255, 0.00)),
-                                     color-stop(050%, rgba(255, 255, 255, 0.15)),
-                                     color-stop(075%, rgba(255, 255, 255, 0.15)),
-                                     color-stop(075%, rgba(255, 255, 255, 0.00)),
-                                     color-stop(100%, rgba(255, 255, 255, 0.00)));
-                                     
-  background-image: -webkit-linear-gradient(45deg,
-                                            rgba(255, 255, 255, 0.15) 025%,
-                                            rgba(255, 255, 255, 0.00) 025%,
-                                            rgba(255, 255, 255, 0.00) 050%,
-                                            rgba(255, 255, 255, 0.15) 050%,
-                                            rgba(255, 255, 255, 0.15) 075%,
-                                            rgba(255, 255, 255, 0.00) 075%,
-                                            rgba(255, 255, 255, 0.00) 100%);
-                                            
-  background-image: -o-linear-gradient(45deg,
-                                       rgba(255, 255, 255, 0.15) 025%,
-                                       rgba(255, 255, 255, 0.00) 025%,
-                                       rgba(255, 255, 255, 0.00) 050%,
-                                       rgba(255, 255, 255, 0.15) 050%,
-                                       rgba(255, 255, 255, 0.15) 075%,
-                                       rgba(255, 255, 255, 0.00) 075%,
-                                       rgba(255, 255, 255, 0.00) 100%);
-                                       
-  background-image: -ms-linear-gradient(45deg, 
-                                        rgba(255, 255, 255, 0.15) 025%,
-                                        rgba(255, 255, 255, 0.00) 025%,
-                                        rgba(255, 255, 255, 0.00) 050%,
-                                        rgba(255, 255, 255, 0.15) 050%,
-                                        rgba(255, 255, 255, 0.15) 075%,
-                                        rgba(255, 255, 255, 0.00) 075%,
-                                        rgba(255, 255, 255, 0.00) 100%);
-                                        
-  background-image: linear-gradient(45deg,
-                                    rgba(255, 255, 255, 0.15) 025%,
-                                    rgba(255, 255, 255, 0.00) 025%,
-                                    rgba(255, 255, 255, 0.00) 050%,
-                                    rgba(255, 255, 255, 0.15) 050%,
-                                    rgba(255, 255, 255, 0.15) 075%,
-                                    rgba(255, 255, 255, 0.00) 075%,
-                                    rgba(255, 255, 255, 0.00) 100%);
-  
-  background-size: 60px 60px;
-  
-  text-align: center;
-  
-  background-color: #D51D0D;
-  color: #333333;
-}
-
-div#popup_error > div {
-  padding: 10px 10px;
-  
-  color: #555555;
-}

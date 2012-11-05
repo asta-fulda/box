@@ -21,7 +21,8 @@
 
 
 (function() {
-  var AnswerModel, ErrorModel, Model, TrackingModel;
+  var AnswerModel, ErrorModel, Model, TrackingModel,
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   ko.bindingHandlers.readonly = {
     update: function(element, valueAccessor) {
@@ -35,16 +36,25 @@
 
   TrackingModel = (function() {
 
-    function TrackingModel(id) {
-      var _this = this;
-      this.id = id;
+    function TrackingModel() {
+      var i,
+        _this = this;
       this.size = ko.observable(0);
       this.received = ko.observable(0);
       this.state = ko.observable('starting');
-      this.progress_url = '/progress?X-Progress-ID=' + this.id;
+      this.progress_id = ((function() {
+        var _i, _results;
+        _results = [];
+        for (i = _i = 1; _i <= 32; i = ++_i) {
+          _results.push(Math.floor(Math.random() * 16).toString(16));
+        }
+        return _results;
+      })()).reduce(function(t, s) {
+        return t + s;
+      });
       this.interval = setInterval((function() {
         return $.ajax({
-          'url': _this.progress_url,
+          'url': "/progress?X-Progress-ID=" + _this.progress_id,
           'dataType': 'json',
           'success': function(data) {
             _this.size(data != null ? data.size : void 0);
@@ -54,7 +64,7 @@
         });
       }), 1000);
       ko.computed(function() {
-        if (_this.state() === 'done' || _this.state === 'error') {
+        if (_this.state() === 'done' || _this.state() === 'error') {
           return clearInterval(_this.interval);
         }
       });
@@ -110,7 +120,8 @@
   ErrorModel = (function() {
 
     function ErrorModel(data) {
-      this.code = data.error_code;
+      this.code = data.code;
+      this.message = data.message;
     }
 
     return ErrorModel;
@@ -120,19 +131,13 @@
   Model = (function() {
 
     function Model() {
-      var i,
-        _this = this;
-      this.upload_tracking_id = ((function() {
-        var _i, _results;
-        _results = [];
-        for (i = _i = 1; _i <= 32; i = ++_i) {
-          _results.push(Math.floor(Math.random() * 16).toString(16));
-        }
-        return _results;
-      })()).reduce(function(t, s) {
-        return t + s;
-      });
-      this.target_url = '/upload?X-Progress-ID=' + this.upload_tracking_id;
+      this.reset_upload = __bind(this.reset_upload, this);
+
+      this.start_upload = __bind(this.start_upload, this);
+
+      this.open_file_chooser = __bind(this.open_file_chooser, this);
+
+      var _this = this;
       this.file = ko.observable('');
       this.title = ko.observable('');
       this.description = ko.observable('');
@@ -148,33 +153,65 @@
     }
 
     Model.prototype.open_file_chooser = function() {
-      return $('#file').click();
+      var file;
+      file = document.getElementById("file");
+      return file.click();
     };
 
-    Model.prototype.start_upload = function() {
-      this.tracking(new TrackingModel(this.upload_tracking_id));
-      return true;
+    Model.prototype.start_upload = function(form) {
+      var data,
+        _this = this;
+      this.tracking(new TrackingModel);
+      data = new FormData(form);
+      $.ajax({
+        'url': "/upload?X-Progress-ID=" + (this.tracking().progress_id),
+        'dataType': 'json',
+        'type': 'POST',
+        'cache': false,
+        'processData': false,
+        'contentType': false,
+        'data': data,
+        'username': this.username(),
+        'password': this.password(),
+        'success': function(data) {
+          var _ref;
+          if ((_ref = _this.tracking()) != null) {
+            _ref.state('done');
+          }
+          return _this.answer(new AnswerModel(data));
+        },
+        'error': function(xhr, status, error) {
+          var _ref;
+          if ((_ref = _this.tracking()) != null) {
+            _ref.state('error');
+          }
+          return _this.error(new ErrorModel({
+            'code': xhr.status,
+            'message': error
+          }));
+        }
+      });
+      return false;
     };
 
-    Model.prototype.upload_completed = function(data, event) {
-      var _ref;
-      if ((_ref = this.tracking()) != null) {
-        _ref.state('done');
-      }
-      data = JSON.parse(event.target.contentDocument.body.innerText || event.target.contentDocument.body.textContent);
-      if (data.error_code) {
-        return this.error(new ErrorModel(data));
-      } else {
-        return this.answer(new AnswerModel(data));
-      }
+    Model.prototype.reset_upload = function() {
+      this.tracking(null);
+      this.answer(null);
+      this.error(null);
+      return $.ajax({
+        'url': '/logout',
+        'type': 'POST',
+        'cache': false,
+        'processData': false,
+        'contentType': false,
+        'username': 'logout'
+      });
     };
 
     return Model;
 
   })();
 
-  $(function() {
-    return ko.applyBindings(new Model());
-  });
+  ko.applyBindings(new Model());
 
 }).call(this);

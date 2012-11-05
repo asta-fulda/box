@@ -27,20 +27,20 @@ ko.bindingHandlers.readonly =
 
 
 class TrackingModel
-    constructor: (@id) ->
+    constructor: () ->
         @size = ko.observable 0
         @received = ko.observable 0
         
         @state = ko.observable 'starting'
         
+        # Generate upload process tracking ID
+        @progress_id = (Math.floor(Math.random() * 16).toString(16) for i in [1..32]).reduce (t, s) -> t + s
         
-        @progress_url = '/progress?X-Progress-ID=' + @id
-        
-        
+        # Start interval for fetching upload progress
         @interval = setInterval (() =>
                 # Fetch the current status of the upload
                 $.ajax
-                    'url': @progress_url
+                    'url': "/progress?X-Progress-ID=#{@progress_id}"
                     'dataType': 'json'
                     'success': (data) =>
                         # Copy the data to the fields
@@ -53,7 +53,7 @@ class TrackingModel
         
         ko.computed () =>
             # Disable interval if upload has been finished
-            if @state() == 'done' or @state == 'error'
+            if @state() == 'done' or @state() == 'error'
                 clearInterval @interval
         
         
@@ -102,18 +102,13 @@ class AnswerModel
 
 class ErrorModel
     constructor: (data) ->
-        @code = data.error_code
+        @code = data.code
+        @message = data.message
 
 
 
 class Model
     constructor: () ->
-        # Generate upload tracking ID
-        @upload_tracking_id = (Math.floor(Math.random() * 16).toString(16) for i in [1..32]).reduce (t, s) -> t + s
-        
-        # Generate the upload URL
-        @target_url = '/upload?X-Progress-ID=' + @upload_tracking_id
-        
         @file = ko.observable ''
         @title = ko.observable ''
         @description = ko.observable ''
@@ -134,37 +129,68 @@ class Model
         # The answer from the upload
         @answer = ko.observable null
         
+        # The occurred error - hopefully none
         @error = ko.observable null
-    
+        
     
     # Open the file chooser dialog
-    open_file_chooser: () ->
-        $('#file').click()
+    open_file_chooser: () =>
+        file = document.getElementById "file"
+        file.click()
     
     
     # Begin the upload process
-    start_upload: () ->
-        @tracking new TrackingModel @upload_tracking_id
+    start_upload: (form) =>
+        @tracking new TrackingModel
         
-        # Start the upload
-        return true
+        # Get the form data from the form
+        data = new FormData form
+        
+        # Upload the data using an ajax request
+        $.ajax
+            'url': "/upload?X-Progress-ID=#{@tracking().progress_id}"
+            'dataType': 'json'
+            'type': 'POST'
+            'cache': false
+            'processData': false
+            'contentType': false
+            'data': data
+            'username': @username()
+            'password': @password()
+            'success': (data) =>
+                # We got a result from the upload - finish tracking
+                @tracking()?.state 'done'
+                
+                # Store the answer in the model
+                @answer new AnswerModel data
+                
+            'error': (xhr, status, error) =>
+                # Stop tracking becaus of the received error
+                @tracking()?.state 'error'
+                
+                @error new ErrorModel
+                    'code': xhr.status
+                    'message': error
+              
+        # Suppress the real upload event
+        return false
     
     
-    # Display the upload result
-    upload_completed: (data, event) ->
-        # We got a result from the upload - finish tracking
-        @tracking()?.state 'done'
+    # Reset the upload process
+    reset_upload: () =>
+        # Reset the tracking and the answers
+        @tracking null
+        @answer null
+        @error null
         
-        # Get the data from the iframe
-        data = JSON.parse event.target.contentDocument.body.innerText or event.target.contentDocument.body.textContent
-        
-        # Create error or answer depending on answer from server
-        if data.error_code
-            @error new ErrorModel data
-        else
-            @answer new AnswerModel data
+        # Sending fake post request to clear authentication cache
+        $.ajax
+            'url': '/logout'
+            'type': 'POST'
+            'cache': false
+            'processData': false
+            'contentType': false
+            'username': 'logout'
 
 
-
-$ () ->
-    ko.applyBindings new Model()
+ko.applyBindings new Model()
