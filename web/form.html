@@ -74,10 +74,20 @@
         <div>Fehler</div>
         
         <div>
-          <p data-bind="text: code"></p>
-          
-          <p data-bind="if: code == 401">
+          <p data-bind="if: code == 401 || code == 403">
             Benutzername und Passwort stimmen nicht &uuml;berein.
+          </p>
+          
+          <p data-bind="if: code == 413">
+            Nicht gen&uuml;gend Speicherplatz.
+          </p>
+          
+          <p data-bind="if: code == 417">
+            Bedingung wurden nicht akzeptiert.
+          </p>
+          
+          <p data-bind="if: code >= 500">
+            Interner Fehler: <span data-bind="text: message"></span>
           </p>
         </div>
         
