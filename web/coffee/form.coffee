@@ -26,8 +26,27 @@ ko.bindingHandlers.readonly =
 
 
 
-class TrackingModel
-    constructor: () ->
+class AnswerModel
+    constructor: (data) ->
+        @id = data.upload_id
+        @user = data.upload_user
+        @file = data.upload_file
+        @size = data.upload_size
+        @expiration = data.upload_expiration
+        
+        @url = "https://box.hs-fulda.org/download/#{@id}?dl=#{@file}"
+
+
+
+class ErrorModel
+    constructor: (data) ->
+        @code = data.code
+        @message = data.message
+
+
+
+class UploadModel
+    constructor: (data, username, password) ->
         @size = ko.observable 0
         @received = ko.observable 0
         
@@ -35,6 +54,12 @@ class TrackingModel
         
         # Generate upload process tracking ID
         @progress_id = (Math.floor(Math.random() * 16).toString(16) for i in [1..32]).reduce (t, s) -> t + s
+        
+        # The answer from the upload
+        @answer = ko.observable null
+        
+        # The occurred error - hopefully none
+        @error = ko.observable null
         
         # Start interval for fetching upload progress
         @interval = setInterval (() =>
@@ -48,14 +73,29 @@ class TrackingModel
                         @received data?.received
                         
                         @state data?.state
+                        
+                        if data?.state == 'error'
+                            @error new ErrorModel
+                                'code': data?.status
+                                'message': null
+                        
+                    'error': (xhr, status, error) =>
+                        @state 'error'
+                
+                        @error new ErrorModel
+                            'code': xhr.status
+                            'message': error
             ), 1000
+
         
-        
+        # Disable interval and upload if upload has been finished or an error has occurred
         ko.computed () =>
-            # Disable interval if upload has been finished
             if @state() == 'done' or @state() == 'error'
+                # Disable the interval
                 clearInterval @interval
-        
+                
+                # Abort the upload request
+                @xhr.abort()
         
         # Compute the progress of the uploading
         @progress = ko.computed () =>
@@ -85,25 +125,38 @@ class TrackingModel
                     @progress()
                 else
                     '...'
-
-
-
-class AnswerModel
-    constructor: (data) ->
-        @id = data.upload_id
-        @user = data.upload_user
-        @file = data.upload_file
-        @size = data.upload_size
-        @expiration = data.upload_expiration
         
-        @url = "https://box.hs-fulda.org/download/#{@id}?dl=#{@file}"
-
-
-
-class ErrorModel
-    constructor: (data) ->
-        @code = data.code
-        @message = data.message
+        
+        # Upload the data using an ajax request
+        @xhr = $.ajax
+            'url': "/upload?X-Progress-ID=#{@progress_id}"
+            'dataType': 'json'
+            'type': 'POST'
+            'cache': false
+            'processData': false
+            'contentType': false
+            'data': data
+            'beforeSend': (xhr) =>
+                # Calculate the basic authentication string
+                basic = Base64.encode "#{username}:#{password}"
+                
+                # Append the authentication header
+                xhr.setRequestHeader 'Authorization', "Basic #{basic}"
+                
+            'success': (data) =>
+                # We got a result from the upload - finish tracking
+                @state 'done'
+                
+                # Store the answer in the model
+                @answer new AnswerModel data
+                
+            'error': (xhr, status, error) =>
+                # Stop tracking becaus of the received error
+                @state 'error'
+                
+                @error new ErrorModel
+                    'code': xhr.status
+                    'message': error
 
 
 
@@ -124,13 +177,7 @@ class Model
             @terms_accepted()
         
         # The upload tracking object
-        @tracking = ko.observable null
-        
-        # The answer from the upload
-        @answer = ko.observable null
-        
-        # The occurred error - hopefully none
-        @error = ko.observable null
+        @upload = ko.observable null
         
     
     # Open the file chooser dialog
@@ -141,52 +188,20 @@ class Model
     
     # Begin the upload process
     start_upload: (form) =>
-        @tracking new TrackingModel
-        
         # Get the form data from the form
         data = new FormData form
         
-        # Upload the data using an ajax request
-        $.ajax
-            'url': "/upload?X-Progress-ID=#{@tracking().progress_id}"
-            'dataType': 'json'
-            'type': 'POST'
-            'cache': false
-            'processData': false
-            'contentType': false
-            'data': data
-            'beforeSend': (xhr) =>
-                # Calculate the basic authentication string
-                basic = Base64.encode "#{@username()}:#{@password()}"
-                
-                # Append the authentication header
-                xhr.setRequestHeader 'Authorization', "Basic #{basic}"
-                
-            'success': (data) =>
-                # We got a result from the upload - finish tracking
-                @tracking()?.state 'done'
-                
-                # Store the answer in the model
-                @answer new AnswerModel data
-                
-            'error': (xhr, status, error) =>
-                # Stop tracking becaus of the received error
-                @tracking()?.state 'error'
-                
-                @error new ErrorModel
-                    'code': xhr.status
-                    'message': error
-              
+        # Create a new upload object handling the upload
+        @upload new UploadModel data, @username(), @password()
+        
         # Suppress the real upload event
         return false
     
     
     # Reset the upload process
     reset_upload: () =>
-        # Reset the tracking and the answers
-        @tracking null
-        @answer null
-        @error null
+        # Reset the upload
+        @upload null
         
         # Sending fake post request to clear authentication cache
         $.ajax

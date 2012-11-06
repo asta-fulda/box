@@ -21,7 +21,7 @@
 
 
 (function() {
-  var AnswerModel, ErrorModel, Model, TrackingModel,
+  var AnswerModel, ErrorModel, Model, UploadModel,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   ko.bindingHandlers.readonly = {
@@ -34,9 +34,35 @@
     }
   };
 
-  TrackingModel = (function() {
+  AnswerModel = (function() {
 
-    function TrackingModel() {
+    function AnswerModel(data) {
+      this.id = data.upload_id;
+      this.user = data.upload_user;
+      this.file = data.upload_file;
+      this.size = data.upload_size;
+      this.expiration = data.upload_expiration;
+      this.url = "https://box.hs-fulda.org/download/" + this.id + "?dl=" + this.file;
+    }
+
+    return AnswerModel;
+
+  })();
+
+  ErrorModel = (function() {
+
+    function ErrorModel(data) {
+      this.code = data.code;
+      this.message = data.message;
+    }
+
+    return ErrorModel;
+
+  })();
+
+  UploadModel = (function() {
+
+    function UploadModel(data, username, password) {
       var i,
         _this = this;
       this.size = ko.observable(0);
@@ -52,6 +78,8 @@
       })()).reduce(function(t, s) {
         return t + s;
       });
+      this.answer = ko.observable(null);
+      this.error = ko.observable(null);
       this.interval = setInterval((function() {
         return $.ajax({
           'url': "/progress?X-Progress-ID=" + _this.progress_id,
@@ -59,13 +87,27 @@
           'success': function(data) {
             _this.size(data != null ? data.size : void 0);
             _this.received(data != null ? data.received : void 0);
-            return _this.state(data != null ? data.state : void 0);
+            _this.state(data != null ? data.state : void 0);
+            if ((data != null ? data.state : void 0) === 'error') {
+              return _this.error(new ErrorModel({
+                'code': data != null ? data.status : void 0,
+                'message': null
+              }));
+            }
+          },
+          'error': function(xhr, status, error) {
+            _this.state('error');
+            return _this.error(new ErrorModel({
+              'code': xhr.status,
+              'message': error
+            }));
           }
         });
       }), 1000);
       ko.computed(function() {
         if (_this.state() === 'done' || _this.state() === 'error') {
-          return clearInterval(_this.interval);
+          clearInterval(_this.interval);
+          return _this.xhr.abort();
         }
       });
       this.progress = ko.computed(function() {
@@ -96,35 +138,34 @@
             return '...';
         }
       });
+      this.xhr = $.ajax({
+        'url': "/upload?X-Progress-ID=" + this.progress_id,
+        'dataType': 'json',
+        'type': 'POST',
+        'cache': false,
+        'processData': false,
+        'contentType': false,
+        'data': data,
+        'beforeSend': function(xhr) {
+          var basic;
+          basic = Base64.encode("" + username + ":" + password);
+          return xhr.setRequestHeader('Authorization', "Basic " + basic);
+        },
+        'success': function(data) {
+          _this.state('done');
+          return _this.answer(new AnswerModel(data));
+        },
+        'error': function(xhr, status, error) {
+          _this.state('error');
+          return _this.error(new ErrorModel({
+            'code': xhr.status,
+            'message': error
+          }));
+        }
+      });
     }
 
-    return TrackingModel;
-
-  })();
-
-  AnswerModel = (function() {
-
-    function AnswerModel(data) {
-      this.id = data.upload_id;
-      this.user = data.upload_user;
-      this.file = data.upload_file;
-      this.size = data.upload_size;
-      this.expiration = data.upload_expiration;
-      this.url = "https://box.hs-fulda.org/download/" + this.id + "?dl=" + this.file;
-    }
-
-    return AnswerModel;
-
-  })();
-
-  ErrorModel = (function() {
-
-    function ErrorModel(data) {
-      this.code = data.code;
-      this.message = data.message;
-    }
-
-    return ErrorModel;
+    return UploadModel;
 
   })();
 
@@ -147,9 +188,7 @@
       this.data_valid = ko.computed(function() {
         return _this.file() !== '' && _this.username() !== '' && _this.password() !== '' && _this.terms_accepted();
       });
-      this.tracking = ko.observable(null);
-      this.answer = ko.observable(null);
-      this.error = ko.observable(null);
+      this.upload = ko.observable(null);
     }
 
     Model.prototype.open_file_chooser = function() {
@@ -159,49 +198,15 @@
     };
 
     Model.prototype.start_upload = function(form) {
-      var data,
-        _this = this;
-      this.tracking(new TrackingModel);
+      var data;
       data = new FormData(form);
-      $.ajax({
-        'url': "/upload?X-Progress-ID=" + (this.tracking().progress_id),
-        'dataType': 'json',
-        'type': 'POST',
-        'cache': false,
-        'processData': false,
-        'contentType': false,
-        'data': data,
-        'beforeSend': function(xhr) {
-          var basic;
-          basic = Base64.encode("" + (_this.username()) + ":" + (_this.password()));
-          return xhr.setRequestHeader('Authorization', "Basic " + basic);
-        },
-        'success': function(data) {
-          var _ref;
-          if ((_ref = _this.tracking()) != null) {
-            _ref.state('done');
-          }
-          return _this.answer(new AnswerModel(data));
-        },
-        'error': function(xhr, status, error) {
-          var _ref;
-          if ((_ref = _this.tracking()) != null) {
-            _ref.state('error');
-          }
-          return _this.error(new ErrorModel({
-            'code': xhr.status,
-            'message': error
-          }));
-        }
-      });
+      this.upload(new UploadModel(data, this.username(), this.password()));
       return false;
     };
 
     Model.prototype.reset_upload = function() {
       var _this = this;
-      this.tracking(null);
-      this.answer(null);
-      this.error(null);
+      this.upload(null);
       return $.ajax({
         'url': '/logout',
         'type': 'POST',

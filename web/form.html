@@ -11,90 +11,92 @@
   <!--# include file="header.html" -->
 
   <div id="content">
-    <!-- ko with: answer -->
-      <div class="popup completed">
-        <div>Datei hochgeladen</div>
-        
-        <div>
-          <p>
-            Die Datei wurde erfolgreich hochgeladen und ver&ouml;ffentlicht. Die
-            Datei ist nun f&uuml;r einen gewissen Zeitraum verf&uuml;gbar und kann
-            nun heruntergeladen werden.
-          </p>
-  
-          <dl>
-            <dt>Dateiname</dt>
-            <dd>
-              <span data-bind="text: file">&nbsp;</span>
-            </dd>
-  
-            <dt>Benutzer</dt>
-            <dd>
-              <span data-bind="text: user">&nbsp;</span>
-            </dd>
-  
-            <dt>Gr&ouml;&szlig;e</dt>
-            <dd>
-              <span data-bind="text: Math.floor(size / 1024 / 1024 * 100) / 100">&nbsp;</span> MB
-            </dd>
-  
-            <dt>G&uuml;ltig bis</dt>
-            <dd>
-              <span data-bind="text: expiration">&nbsp;</span>
-            </dd>
-          </dl>
-  
-          <p>
-            Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
-            <code data-bind="text: url"></code>
-          </p>
-  
-          <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:</p>
-          <div style="text-align: center;">
-            <a data-bind="attr: { href: 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-              <img class="share_botton" src="/img/facebook.png" alt="Share on Facebook" />
-            </a>
-            <a data-bind="attr: { href: 'https://plus.google.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-              <img class="share_botton" src="/img/gplus.png" alt="Share on Google+" />
-            </a>
-            <a data-bind="attr: { href: 'https://twitter.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-              <img class="share_botton" src="/img/twitter.png" alt="Share on Twitter" />
-            </a>
+    <!-- ko with: upload -->
+      <!-- ko with: answer -->
+        <div class="popup completed">
+          <div>Datei hochgeladen</div>
+          
+          <div>
+            <p>
+              Die Datei wurde erfolgreich hochgeladen und ver&ouml;ffentlicht. Die
+              Datei ist nun f&uuml;r einen gewissen Zeitraum verf&uuml;gbar und kann
+              nun heruntergeladen werden.
+            </p>
+    
+            <dl>
+              <dt>Dateiname</dt>
+              <dd>
+                <span data-bind="text: file">&nbsp;</span>
+              </dd>
+    
+              <dt>Benutzer</dt>
+              <dd>
+                <span data-bind="text: user">&nbsp;</span>
+              </dd>
+    
+              <dt>Gr&ouml;&szlig;e</dt>
+              <dd>
+                <span data-bind="text: Math.floor(size / 1024 / 1024 * 100) / 100">&nbsp;</span> MB
+              </dd>
+    
+              <dt>G&uuml;ltig bis</dt>
+              <dd>
+                <span data-bind="text: expiration">&nbsp;</span>
+              </dd>
+            </dl>
+    
+            <p>
+              Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
+              <code data-bind="text: url"></code>
+            </p>
+    
+            <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:</p>
+            <div style="text-align: center;">
+              <a data-bind="attr: { href: 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+                <img class="share_botton" src="/img/facebook.png" alt="Share on Facebook" />
+              </a>
+              <a data-bind="attr: { href: 'https://plus.google.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+                <img class="share_botton" src="/img/gplus.png" alt="Share on Google+" />
+              </a>
+              <a data-bind="attr: { href: 'https://twitter.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+                <img class="share_botton" src="/img/twitter.png" alt="Share on Twitter" />
+              </a>
+            </div>
+          </div>
+          
+          <div>
+            <button data-bind="click: $root.reset_upload">Schlie&szlig;en</button>
           </div>
         </div>
-        
-        <div>
-          <button data-bind="click: $root.reset_upload">Schlie&szlig;en</button>
-        </div>
-      </div>
-    <!-- /ko -->
-    
-    <!-- ko with: error -->
-      <div class="popup error">
-        <div>Fehler</div>
-        
-        <div>
-          <p data-bind="if: code == 401 || code == 403">
-            Benutzername und Passwort stimmen nicht &uuml;berein.
-          </p>
+      <!-- /ko -->
+      
+      <!-- ko with: error -->
+        <div class="popup error">
+          <div>Fehler</div>
           
-          <p data-bind="if: code == 413">
-            Nicht gen&uuml;gend Speicherplatz.
-          </p>
+          <div>
+            <p data-bind="if: code == 401 || code == 403">
+              Benutzername und Passwort stimmen nicht &uuml;berein.
+            </p>
+            
+            <p data-bind="if: code == 413">
+              Nicht gen&uuml;gend Speicherplatz.
+            </p>
+            
+            <p data-bind="if: code == 417">
+              Bedingung wurden nicht akzeptiert.
+            </p>
+            
+            <p data-bind="if: code >= 500">
+              Interner Fehler: <span data-bind="text: message"></span>
+            </p>
+          </div>
           
-          <p data-bind="if: code == 417">
-            Bedingung wurden nicht akzeptiert.
-          </p>
-          
-          <p data-bind="if: code >= 500">
-            Interner Fehler: <span data-bind="text: message"></span>
-          </p>
+          <div>
+            <button data-bind="click: $root.reset_upload">Abbrechen</button>
+          </div>
         </div>
-        
-        <div>
-          <button data-bind="click: $root.reset_upload">Abbrechen</button>
-        </div>
-      </div>
+      <!-- /ko -->
     <!-- /ko -->
 
     <div id="form_wrapper">
@@ -106,15 +108,15 @@
               <p>
                 <label for="file" class="required">Datei</label><br />
                 <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
-                <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: tracking, visible: true" />
+                <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
               </p>
               <p>
                 <label for="title">Titel</label><br />
-                <input id="title" name="title" type="text" data-bind="value: title, readonly: tracking" />
+                <input id="title" name="title" type="text" data-bind="value: title, readonly: upload" />
               </p>
               <p>
                 <label for="description">Beschreibung</label><br />
-                <textarea id="description" name="description" data-bind="value: description, readonly: tracking"></textarea>
+                <textarea id="description" name="description" data-bind="value: description, readonly: upload"></textarea>
               </p>
             </div>
           </div>
@@ -123,21 +125,21 @@
               <h1>Benutzer-Informationen</h1>
               <p>
                 <label for="username" class="required">Benutzer</label><br />
-                <input id="username" name="username" type="text" data-bind="value: username, readonly: tracking" />
+                <input id="username" name="username" type="text" data-bind="value: username, readonly: upload" />
               </p>
               <p>
                 <label for="password" class="required">Password</label><br />
-                <input id="password" name="password" type="password" data-bind="value: password, readonly: tracking" />
+                <input id="password" name="password" type="password" data-bind="value: password, readonly: upload" />
               </p>
             </div>
             <div id="upload_box">
               <h1>Hochladen</h1>
               <p>
-                <input id="terms_accepted" name="terms_accepted" type="checkbox" data-bind="checked: terms_accepted, readonly: tracking" /> <label for="terms_accepted" class="required"><a href="terms.html">AGBs</a> gelesen und akzeptiert</label>
+                <input id="terms_accepted" name="terms_accepted" type="checkbox" data-bind="checked: terms_accepted, readonly: upload" /> <label for="terms_accepted" class="required"><a href="terms.html">AGBs</a> gelesen und akzeptiert</label>
               </p>
               <p>
-                <input type="submit" class="submit" id="submit" value="Hochladen" data-bind="enable: data_valid, visible: tracking() == null" />
-                <span id="progress" style="display: none;" data-bind="visible: tracking() != null, with: tracking">
+                <input type="submit" class="submit" id="submit" value="Hochladen" data-bind="enable: data_valid, visible: upload() == null" />
+                <span id="progress" style="display: none;" data-bind="visible: upload() != null, with: upload">
                   <span id="progress_bar" data-bind="style: { width: progress }, css: { active: state() == 'uploading' }">&nbsp;</span>
                   <span id="progress_label" data-bind="text: state_text"></span>
                 </span>
