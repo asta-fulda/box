@@ -34,8 +34,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flag_st_data, "st_data", "/var/lib/box", "storage data")
-	flag.StringVar(&flag_st_temp, "st_temp", "/var/tmp/box", "storage temp")
+	flag.StringVar(&flag_st_data, "st_data", "/var/lib/box/storage", "storage data")
+	flag.StringVar(&flag_st_temp, "st_temp", "/var/lib/box/tmp", "storage temp")
 }
 
 // Wrapper for the defined storage
