@@ -155,8 +155,13 @@ class Model
             'processData': false
             'contentType': false
             'data': data
-            'username': @username()
-            'password': @password()
+            'beforeSend': (xhr) =>
+                # Calculate the basic authentication string
+                basic = Base64.encode "#{@username()}:#{@password()}"
+                
+                # Append the authentication header
+                xhr.setRequestHeader 'Authorization', "Basic #{basic}"
+                
             'success': (data) =>
                 # We got a result from the upload - finish tracking
                 @tracking()?.state 'done'

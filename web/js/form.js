@@ -171,8 +171,11 @@
         'processData': false,
         'contentType': false,
         'data': data,
-        'username': this.username(),
-        'password': this.password(),
+        'beforeSend': function(xhr) {
+          var basic;
+          basic = Base64.encode("" + (_this.username()) + ":" + (_this.password()));
+          return xhr.setRequestHeader('Authorization', "Basic " + basic);
+        },
         'success': function(data) {
           var _ref;
           if ((_ref = _this.tracking()) != null) {
