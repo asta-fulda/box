@@ -198,6 +198,7 @@
     };
 
     Model.prototype.reset_upload = function() {
+      var _this = this;
       this.tracking(null);
       this.answer(null);
       this.error(null);
@@ -207,7 +208,11 @@
         'cache': false,
         'processData': false,
         'contentType': false,
-        'username': 'logout'
+        'beforeSend': function(xhr) {
+          var basic;
+          basic = Base64.encode("logout:logout");
+          return xhr.setRequestHeader('Authorization', "Basic " + basic);
+        }
       });
     };
 

@@ -195,7 +195,12 @@ class Model
             'cache': false
             'processData': false
             'contentType': false
-            'username': 'logout'
+            'beforeSend': (xhr) =>
+                # Calculate the basic authentication string
+                basic = Base64.encode "logout:logout"
+                
+                # Append the authentication header
+                xhr.setRequestHeader 'Authorization', "Basic #{basic}"
 
 
 ko.applyBindings new Model()
