@@ -97,7 +97,7 @@ class UploadModel
                 clearInterval @interval
                 
                 # Abort the upload request
-                @xhr.abort()
+                @xhr?.abort()
         
         # Compute the progress of the uploading
         @progress = ko.computed () =>

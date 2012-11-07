@@ -107,9 +107,10 @@
         });
       }), 1000);
       ko.computed(function() {
+        var _ref;
         if (_this.state() === 'done' || _this.state() === 'error') {
           clearInterval(_this.interval);
-          return _this.xhr.abort();
+          return (_ref = _this.xhr) != null ? _ref.abort() : void 0;
         }
       });
       this.progress = ko.computed(function() {
