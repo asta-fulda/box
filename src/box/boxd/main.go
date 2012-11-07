@@ -91,9 +91,6 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 	// Fill in upload record from the posted values
 	record.Filename = request.FormValue("file.name")
 
-	record.Title = request.FormValue("title")
-	record.Description = request.FormValue("description")
-
 	// Check if terms are accepted
 	if request.FormValue("terms_accepted") != "on" {
 		answer.Error = &AnswerError{

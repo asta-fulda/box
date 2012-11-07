@@ -180,8 +180,6 @@
 
       var _this = this;
       this.file = ko.observable('');
-      this.title = ko.observable('');
-      this.description = ko.observable('');
       this.username = ko.observable('');
       this.password = ko.observable('');
       this.terms_accepted = ko.observable(false);

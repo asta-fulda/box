@@ -36,12 +36,6 @@ type UploadRecord struct {
 	// The filename of the upload
 	Filename string `json:"filename"`
 
-	// The name of the upload
-	Title string `json:"title"`
-
-	// The description of the upload
-	Description string `json:"description"`
-
 	// The user who has done the upload
 	User string `json:"user"`
 
@@ -172,17 +166,13 @@ func (tx *Transaction) Insert(record UploadRecord) (err error) {
       INSERT INTO uploads (
         "id",
         "filename",
-        "title",
-        "description",
         "user",
         "creation",
         "expiration",
         "size"
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      ) VALUES ($1, $2, $3, $4, $5, $6)`,
 			record.Id,
 			record.Filename,
-			record.Title,
-			record.Description,
 			record.User,
 			record.Creation,
 			record.Expiration,

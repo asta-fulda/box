@@ -20,30 +20,29 @@
 div#form_wrapper {
 	display: table;
 	
-	padding: 30px 50px;
+	padding: 50px 50px;
 	
 	margin: 0 auto;
-	width: 680px;
 }
 
-div#row {
-	display: table-row;
+div.row {
+	width: 600px;
+	
+	clear: both;
 }
 
-div#column_left,
-div#column_right {
-	display: table-cell;
+div.col {
+		float: left;
+		
+		margin: 0 10px;
 }
 
-div#column_left {
-	width: 415px;
-	padding-right: 15px;
+div.col.span1 {
+		width: 280px;
 }
 
-div#column_right {
-	width: 235px;
-
-	padding-left: 15px;
+div.col.span2 {
+    width: 580px;
 }
 
 div#form_wrapper p {
@@ -115,6 +114,8 @@ span#progress {
 }
 
 input[type=submit] {
+	margin-top: 5px;
+	
   box-shadow: 0 2px 4px #555555;
 }
 

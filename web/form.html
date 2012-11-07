@@ -101,50 +101,50 @@
 
     <div id="form_wrapper">
       <form id="form" method="post" enctype="multipart/form-data" target="transit" data-bind="submit: start_upload">
-        <div id="row">
-          <div id="column_left">
-            <div id="file_box">
-              <h1>Datei-Informationen</h1>
-              <p>
-                <label for="file" class="required">Datei</label><br />
-                <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
-                <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
-              </p>
-              <p>
-                <label for="title">Titel</label><br />
-                <input id="title" name="title" type="text" data-bind="value: title, readonly: upload" />
-              </p>
-              <p>
-                <label for="description">Beschreibung</label><br />
-                <textarea id="description" name="description" data-bind="value: description, readonly: upload"></textarea>
-              </p>
-            </div>
-          </div>
-          <div id="column_right">
+        <div class="row">
+          <div class="col span1">
             <div id="user_box">
               <h1>Benutzer-Informationen</h1>
               <p>
                 <label for="username" class="required">Benutzer</label><br />
                 <input id="username" name="username" type="text" data-bind="value: username, readonly: upload" />
               </p>
+              
               <p>
                 <label for="password" class="required">Password</label><br />
                 <input id="password" name="password" type="password" data-bind="value: password, readonly: upload" />
               </p>
             </div>
+          </div>
+          
+          <div class="col span1">
+            <div id="file_box">
+              <h1>Datei-Informationen</h1>
+              
+              <p>
+                <label for="file" class="required">Datei</label><br />
+                <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
+                <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
+              </p>
+            </div>
+            
             <div id="upload_box">
-              <h1>Hochladen</h1>
+              <h1>Bedingungen</h1>
+              
               <p>
                 <input id="terms_accepted" name="terms_accepted" type="checkbox" data-bind="checked: terms_accepted, readonly: upload" /> <label for="terms_accepted" class="required"><a href="terms.html">AGBs</a> gelesen und akzeptiert</label>
               </p>
-              <p>
-                <input type="submit" class="submit" id="submit" value="Hochladen" data-bind="enable: data_valid, visible: upload() == null" />
-                <span id="progress" style="display: none;" data-bind="visible: upload() != null, with: upload">
-                  <span id="progress_bar" data-bind="style: { width: progress }, css: { active: state() == 'uploading' }">&nbsp;</span>
-                  <span id="progress_label" data-bind="text: state_text"></span>
-                </span>
-              </p>
             </div>
+          </div>
+          
+          <div class="col span2">
+            <p>
+              <input type="submit" class="submit" id="submit" value="Hochladen" data-bind="enable: data_valid, visible: upload() == null" />
+              <span id="progress" style="display: none;" data-bind="visible: upload() != null, with: upload">
+                <span id="progress_bar" data-bind="style: { width: progress }, css: { active: state() == 'uploading' }">&nbsp;</span>
+                <span id="progress_label" data-bind="text: state_text"></span>
+              </span>
+            </p>
           </div>
         </div>
       </form>

@@ -163,8 +163,6 @@ class UploadModel
 class Model
     constructor: () ->
         @file = ko.observable ''
-        @title = ko.observable ''
-        @description = ko.observable ''
         @username = ko.observable ''
         @password = ko.observable ''
         @terms_accepted = ko.observable false
