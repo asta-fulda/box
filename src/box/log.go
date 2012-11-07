@@ -75,7 +75,9 @@ func logLevelName(level LogLevel) string {
 func Log(level LogLevel, format string, a ...interface{}) {
 	// Print the log message if required
 	if level >= LogLevel(flag_log_level) {
-		fmt.Printf("%v | %7s | %s\n", time.Now(), logLevelName(level), fmt.Sprintf(format, a...))
+	  var message string = fmt.Sprintf(format, a...)
+	  
+		fmt.Printf("%+v | %7s | %s\n", time.Now(), logLevelName(level), message)
 	}
 
 	// Check for fatal messages and exit
@@ -85,21 +87,21 @@ func Log(level LogLevel, format string, a ...interface{}) {
 }
 
 func LogDebug(format string, a ...interface{}) {
-	Log(LOG_LEVEL_DEBUG, format, a)
+	Log(LOG_LEVEL_DEBUG, format, a...)
 }
 
 func LogInfo(format string, a ...interface{}) {
-	Log(LOG_LEVEL_INFO, format, a)
+	Log(LOG_LEVEL_INFO, format, a...)
 }
 
 func LogWarning(format string, a ...interface{}) {
-	Log(LOG_LEVEL_WARNING, format, a)
+	Log(LOG_LEVEL_WARNING, format, a...)
 }
 
 func LogError(format string, a ...interface{}) {
-	Log(LOG_LEVEL_ERROR, format, a)
+	Log(LOG_LEVEL_ERROR, format, a...)
 }
 
 func LogFatal(format string, a ...interface{}) {
-	Log(LOG_LEVEL_FATAL, format, a)
+	Log(LOG_LEVEL_FATAL, format, a...)
 }
