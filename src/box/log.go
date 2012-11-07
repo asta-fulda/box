@@ -79,7 +79,7 @@ func Log(level LogLevel, format string, a ...interface{}) {
 	}
 
 	// Check for fatal messages and exit
-	if level > LOG_LEVEL_FATAL {
+	if level >= LOG_LEVEL_FATAL {
 		os.Exit(1)
 	}
 }
