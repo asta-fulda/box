@@ -114,7 +114,7 @@ span#progress {
 }
 
 input[type=submit] {
-	margin-top: 5px;
+	margin-top: 15px;
 	
   box-shadow: 0 2px 4px #555555;
 }
