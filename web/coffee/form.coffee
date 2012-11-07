@@ -25,6 +25,8 @@ ko.bindingHandlers.readonly =
             element.removeAttribute "readonly"
 
 
+baseURL = 'https://box.hs-fulda.org'
+
 
 class AnswerModel
     constructor: (data) ->
@@ -34,7 +36,7 @@ class AnswerModel
         @size = data.upload_size
         @expiration = data.upload_expiration
         
-        @url = "https://box.hs-fulda.org/download/#{@id}?dl=#{@file}"
+        @url = "#{baseURL}/download.html?f=#{@id}&d=#{@file}"
 
 
 
@@ -65,7 +67,7 @@ class UploadModel
         @interval = setInterval (() =>
                 # Fetch the current status of the upload
                 $.ajax
-                    'url': "/progress?X-Progress-ID=#{@progress_id}"
+                    'url': "#{baseURL}/progress?X-Progress-ID=#{@progress_id}"
                     'dataType': 'json'
                     'success': (data) =>
                         # Copy the data to the fields
@@ -129,7 +131,7 @@ class UploadModel
         
         # Upload the data using an ajax request
         @xhr = $.ajax
-            'url': "/upload?X-Progress-ID=#{@progress_id}"
+            'url': "#{baseURL}/upload?X-Progress-ID=#{@progress_id}"
             'dataType': 'json'
             'type': 'POST'
             'cache': false
@@ -203,7 +205,7 @@ class Model
         
         # Sending fake post request to clear authentication cache
         $.ajax
-            'url': '/logout'
+            'url': "#{baseURL}/logout"
             'type': 'POST'
             'cache': false
             'processData': false
