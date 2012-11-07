@@ -124,11 +124,14 @@
               <p>
                 <label for="file" class="required">Datei</label><br />
                 <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
-                <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
+                <span class="file_field">
+                  <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
+                  <button data-bind="click: open_file_chooser">Browse...</button>
+                </span>
               </p>
             </div>
             
-            <div id="upload_box">
+            <div id="terms_box">
               <h1>Bedingungen</h1>
               
               <p>

@@ -99,6 +99,10 @@ textarea {
 	color: #555555;
 }
 
+button {
+	background-color: #EEEEEE;
+}
+
 textarea {
 	height: 90px;
 }
@@ -128,6 +132,33 @@ input[readonly],
 textarea[readonly] {
 	background-color: #999999;
 	color: #CCCCCC;
+}
+
+div#form_wrapper .file_field > input[type=text] {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  
+  float: left;
+  width: 66%;
+}
+
+div#form_wrapper .file_field > button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  
+  float: left;
+  width: 33%;
+  
+  height: 38px;
+  
+  border-left: none;
+  
+  box-shadow: none;
+}
+
+div#form_wrapper .file_field {
+		display: inline-block;
+		clear: both;
 }
 
 label.required:after {
