@@ -34,7 +34,7 @@
     }
   };
 
-  baseURL = 'https://box.hs-fulda.org';
+  baseURL = '';
 
   AnswerModel = (function() {
 

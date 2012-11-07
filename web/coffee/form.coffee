@@ -25,7 +25,7 @@ ko.bindingHandlers.readonly =
             element.removeAttribute "readonly"
 
 
-baseURL = 'https://box.hs-fulda.org'
+baseURL = ''
 
 
 class AnswerModel
