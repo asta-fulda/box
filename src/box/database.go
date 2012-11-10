@@ -204,7 +204,7 @@ func (tx *Transaction) QuerySpaceConsumptionFor(user string) (result uint64, err
 			GROUP BY "u"."user"`,
 			user)
 
-    // Get result - use zero if query returned no result for the given username
+		// Get result - use zero if query returned no result for the given username
 		err = row.Scan(&result)
 		if err == sql.ErrNoRows {
 			result = 0
@@ -289,6 +289,35 @@ func (tx *Transaction) QueryExpiredUploads() (result []string, err error) {
 			}
 
 			result = append(result, id)
+		}
+
+		return
+	})
+
+	return
+}
+
+// Query if given upload is expired - an upload thus not having any records which are currently active
+func (tx *Transaction) QueryExpiredUpload(id string) (result bool, err error) {
+	err = tx.do(func(tx *sql.Tx) (err error) {
+		var rows *sql.Rows
+
+		rows, err = tx.Query(`
+      SELECT 
+        "u"."id" AS "id"
+      FROM "uploads" AS "u"
+      WHERE "u"."id" = $1
+      GROUP BY "u"."id"
+      HAVING MAX("u"."expiration") < NOW()`,
+			id)
+		if err != nil {
+			return
+		}
+
+		defer rows.Close()
+
+		if rows.Next() {
+			result = true
 		}
 
 		return

@@ -23,6 +23,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"path"
 )
@@ -139,6 +140,20 @@ func (st *Storage) Remove(id string) (err error) {
   LogDebug("File removed from storage: %s", path)
 
 	return
+}
+
+// List all files in storage
+func (st *Storage) List() (ids []string, err error) {
+  var files []os.FileInfo
+  
+  // Get the files in the storage
+  files, err = ioutil.ReadDir(st.data)
+  
+  for _, file := range files {
+    ids = append(ids, file.Name())
+  }
+  
+  return
 }
 
 // Close the storage

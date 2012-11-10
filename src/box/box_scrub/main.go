@@ -65,20 +65,31 @@ func main() {
 	// Find all expired uploads
 	var ids []string
 
-	ids, err = transaction.QueryExpiredUploads()
+	// Get all ids in storage
+	ids, err = storage.List()
 	if err != nil {
 		box.LogFatal("%v", err)
 	}
 
 	// Remove all expired uploads from storage
 	for _, id := range ids {
-		box.LogDebug("About to remove file: %s", id)
+		var expired bool
 
-		err = storage.Remove(id)
-		if err != os.ErrNotExist {
-			// File is already gone - ignore it
-		} else if err != nil {
-			box.LogError("%v", err)
+		// Query if the file is expired
+		expired, err = transaction.QueryExpiredUpload(id)
+		if err != nil {
+			box.LogFatal("%v", err)
+		}
+
+		if expired {
+			box.LogDebug("Removing file: %s", id)
+
+			err = storage.Remove(id)
+			if err != os.ErrNotExist {
+				// File is already gone - ignore it
+			} else if err != nil {
+				box.LogError("%v", err)
+			}
 		}
 	}
 }
