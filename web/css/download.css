@@ -1,0 +1,76 @@
+/*                                                                                                                                                                                                                 
+ * Copyright 2011 Dustin Frisch<fooker@lab.sh>
+ * 
+ * This file is part of box.
+ * 
+ * box is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * box is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with box. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+div#download {
+	padding: 50px 50px;
+
+  left: 0;
+  right: 0;
+  
+  margin-left: auto;
+  margin-right: auto;
+  
+  width: 500px;
+}
+
+div#download a {
+  margin-top: 15px;
+  
+  display: inline-block;
+  width: 100%;
+  
+  box-shadow: 0 2px 4px #555555;
+  
+  background-color: #7AB51D;
+  color: #FFFFFF;
+  padding: 10px 10px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555555;
+  border-radius: 5px 5px 5px 5px;
+
+  font-size: 14px;
+  font-weight: bold;
+  
+  text-align: center;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+div#download a.disabled {
+  background-color: #999999;
+  color: #CCCCCC;
+}
+
+div#download dl > dt {
+  font-weight: bold;
+  
+  clear: left;
+  float: left;
+  
+  width: 7em;
+}
+
+div#download dl > dt:after {
+  content: ':';
+  font-weight: bold;
+}

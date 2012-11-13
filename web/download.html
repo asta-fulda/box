@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!--# include file="head.html" -->
+
+  <link type="text/css" rel="stylesheet" media="screen" href="css/download.css" />
+  
+  
+</head>
+
+<body>
+  <!--# include file="header.html" -->
+
+  <div id="content">
+    <div id=download>
+      <dl data-bind="visible: !loading()">
+        <dt>ID</dt>
+        <dd>
+          <span data-bind="text: id">&nbsp;</span>
+        </dd>
+        
+        <dt>Filename</dt>
+        <dd>
+          <span data-bind="text: file">&nbsp;</span>
+        </dd>
+        
+        <dt>Size</dt>
+        <dd>
+          <span data-bind="text: Math.floor(size() / 1024 / 1024 * 100) / 100">&nbsp;</span> MB
+        </dd>
+        
+        <dt>Type</dt>
+        <dd>
+          <span data-bind="text: type">&nbsp;</span>
+        </dd>
+      </dl>
+    
+      <a href="#" data-bind="attr: { href: download_url }, css: { disabled: loading }">Download</a>
+    </div>
+  </div>
+
+  <!--# include file="footer.html" -->
+
+  <script type="text/javascript" src="js/download.js"></script>
+</body>
+</html>
