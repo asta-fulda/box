@@ -448,7 +448,7 @@ div.popup code {
   box-shadow: 3px 3px 4px #000000 inset;
 }
 
-div.popup dl dt {
+div.popup dl > dt {
 	font-weight: bold;
 	
 	clear: left;
@@ -457,7 +457,7 @@ div.popup dl dt {
 	width: 7em;
 }
 
-div.popup dl dt:after {
+div.popup dl > dt:after {
 	content: ':';
   font-weight: bold;
 }
