@@ -22,7 +22,7 @@
 
 (function() {
 
-  this.base_url = '';
+  this.base_url = this.location.href.replace(/\/[^\/]*$/, '');
 
   this.get_url_parameters = function() {
     var key, parameters, part, value, _i, _len, _ref, _ref1;

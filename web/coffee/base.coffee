@@ -18,7 +18,7 @@
 ###
 
 
-@base_url = ''
+@base_url = @location.href.replace /\/[^\/]*$/, ''
 
 @get_url_parameters = () ->
   parameters = {}
