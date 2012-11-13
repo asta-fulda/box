@@ -21,7 +21,7 @@
 
 
 (function() {
-  var AnswerModel, ErrorModel, Model, UploadModel, baseURL,
+  var AnswerModel, ErrorModel, Model, UploadModel,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   ko.bindingHandlers.readonly = {
@@ -34,8 +34,6 @@
     }
   };
 
-  baseURL = '';
-
   AnswerModel = (function() {
 
     function AnswerModel(data) {
@@ -44,7 +42,7 @@
       this.file = data.upload_file;
       this.size = data.upload_size;
       this.expiration = data.upload_expiration;
-      this.url = "" + baseURL + "/download.html?f=" + this.id + "&d=" + this.file;
+      this.url = "" + base_url + "/download.html?i=" + this.id + "&f=" + this.file;
     }
 
     return AnswerModel;
@@ -84,7 +82,7 @@
       this.error = ko.observable(null);
       this.interval = setInterval((function() {
         return $.ajax({
-          'url': "" + baseURL + "/progress?X-Progress-ID=" + _this.progress_id,
+          'url': "" + base_url + "/progress?X-Progress-ID=" + _this.progress_id,
           'dataType': 'json',
           'success': function(data) {
             _this.size(data != null ? data.size : void 0);
@@ -142,7 +140,7 @@
         }
       });
       this.xhr = $.ajax({
-        'url': "" + baseURL + "/upload?X-Progress-ID=" + this.progress_id,
+        'url': "" + base_url + "/upload?X-Progress-ID=" + this.progress_id,
         'dataType': 'json',
         'type': 'POST',
         'cache': false,
@@ -209,7 +207,7 @@
       var _this = this;
       this.upload(null);
       return $.ajax({
-        'url': "" + baseURL + "/logout",
+        'url': "" + base_url + "/logout",
         'type': 'POST',
         'cache': false,
         'processData': false,
