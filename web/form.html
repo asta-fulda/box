@@ -12,95 +12,91 @@
 
   <div id="content">
     <!-- ko with: upload -->
-      <!-- ko with: answer -->
-        <div class="popup completed">
-          <div>Datei hochgeladen</div>
-          
-          <div>
-            <p>
-              Die Datei wurde erfolgreich hochgeladen und ver&ouml;ffentlicht. Die
-              Datei ist nun f&uuml;r einen gewissen Zeitraum verf&uuml;gbar und kann
-              nun heruntergeladen werden.
-            </p>
-    
-            <dl>
-              <dt>Dateiname</dt>
-              <dd>
-                <span data-bind="text: file">&nbsp;</span>
-              </dd>
-    
-              <dt>Benutzer</dt>
-              <dd>
-                <span data-bind="text: user">&nbsp;</span>
-              </dd>
-    
-              <dt>Gr&ouml;&szlig;e</dt>
-              <dd>
-                <span data-bind="text: Math.floor(size / 1024 / 1024 * 100) / 100">&nbsp;</span> MB
-              </dd>
-    
-              <dt>G&uuml;ltig bis</dt>
-              <dd>
-                <span data-bind="text: expiration">&nbsp;</span>
-              </dd>
-            </dl>
-    
-            <p>
-              Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
-              <code data-bind="text: url"></code>
-            </p>
-    
-            <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:</p>
-            <div style="text-align: center;">
-              <a data-bind="attr: { href: 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-                <img class="share_botton" src="/img/facebook.png" alt="Share on Facebook" />
-              </a>
-              <a data-bind="attr: { href: 'https://plus.google.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-                <img class="share_botton" src="/img/gplus.png" alt="Share on Google+" />
-              </a>
-              <a data-bind="attr: { href: 'https://twitter.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
-                <img class="share_botton" src="/img/twitter.png" alt="Share on Twitter" />
-              </a>
-            </div>
-          </div>
-          
-          <div>
-            <button data-bind="click: $root.reset_upload">Schlie&szlig;en</button>
+      <div class="popup completed" data-bind="visible: answer, with: answer" style="display: none">
+        <div>Datei hochgeladen</div>
+        
+        <div>
+          <p>
+            Die Datei wurde erfolgreich hochgeladen und ver&ouml;ffentlicht. Die
+            Datei ist nun f&uuml;r einen gewissen Zeitraum verf&uuml;gbar und kann
+            nun heruntergeladen werden.
+          </p>
+  
+          <dl>
+            <dt>Dateiname</dt>
+            <dd>
+              <span data-bind="text: file">&nbsp;</span>
+            </dd>
+  
+            <dt>Benutzer</dt>
+            <dd>
+              <span data-bind="text: user">&nbsp;</span>
+            </dd>
+  
+            <dt>Gr&ouml;&szlig;e</dt>
+            <dd>
+              <span data-bind="text: Math.floor(size / 1024 / 1024 * 100) / 100">&nbsp;</span> MB
+            </dd>
+  
+            <dt>G&uuml;ltig bis</dt>
+            <dd>
+              <span data-bind="text: expiration">&nbsp;</span>
+            </dd>
+          </dl>
+  
+          <p>
+            Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
+            <code data-bind="text: url"></code>
+          </p>
+  
+          <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:</p>
+          <div style="text-align: center;">
+            <a data-bind="attr: { href: 'https://www.facebook.com/sharer.php?u=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+              <img class="share_botton" src="/img/facebook.png" alt="Share on Facebook" />
+            </a>
+            <a data-bind="attr: { href: 'https://plus.google.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+              <img class="share_botton" src="/img/gplus.png" alt="Share on Google+" />
+            </a>
+            <a data-bind="attr: { href: 'https://twitter.com/share?url=' + encodeURIComponent(url) }" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600'); return false;">
+              <img class="share_botton" src="/img/twitter.png" alt="Share on Twitter" />
+            </a>
           </div>
         </div>
-      <!-- /ko -->
-      
-      <!-- ko with: error -->
-        <div class="popup error">
-          <div>Fehler</div>
-          
-          <div>
-            <p data-bind="if: code == 401 || code == 403">
-              Benutzername und Passwort stimmen nicht &uuml;berein.
-            </p>
-            
-            <p data-bind="if: code == 413">
-              Nicht gen&uuml;gend Speicherplatz.
-            </p>
-            
-            <p data-bind="if: code == 417">
-              Bedingung wurden nicht akzeptiert.
-            </p>
-            
-            <p data-bind="if: code >= 500">
-              Interner Fehler: <span data-bind="text: message"></span>
-            </p>
-          </div>
-          
-          <div>
-            <button data-bind="click: $root.reset_upload">Abbrechen</button>
-          </div>
+        
+        <div>
+          <button data-bind="click: $root.reset_upload">Schlie&szlig;en</button>
         </div>
-      <!-- /ko -->
+      </div>
+    
+      <div class="popup error" data-bind="visible: error, with: error" style="display: none">
+        <div>Fehler</div>
+        
+        <div>
+          <!-- ko if: code == 401 || code == 403 --><p>
+            Benutzername und Passwort stimmen nicht &uuml;berein.
+          </p><!-- /ko -->
+          
+          <!-- ko if: code == 413 --><p>
+            Nicht gen&uuml;gend Speicherplatz.
+          </p><!-- /ko -->
+          
+          <!-- ko if: code == 417 --><p>
+            Bedingung wurden nicht akzeptiert.
+          </p><!-- /ko -->
+          
+          <!-- ko if: code >= 500 --><p>
+            Interner Fehler: <span data-bind="text: message"></span>
+          </p><!-- /ko -->
+        </div>
+        
+        <div>
+          <button data-bind="click: $root.reset_upload">Abbrechen</button>
+        </div>
+      </div>
     <!-- /ko -->
 
     <div id="form_wrapper">
-      <form id="form" method="post" enctype="multipart/form-data" target="transit" data-bind="submit: start_upload">
+      <form id="form" data-bind="submit: start_upload">
         <div class="row">
           <div class="col span1">
             <div id="user_box">
@@ -126,7 +122,7 @@
                 <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
                 <span class="file_field">
                   <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
-                  <button data-bind="click: open_file_chooser">Browse...</button>
+                  <button style="display: none" data-bind="click: open_file_chooser, visible: true">Browse...</button>
                 </span>
               </p>
             </div>

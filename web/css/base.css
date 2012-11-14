@@ -112,3 +112,200 @@ div#footer div.beta {
 		font-size: 10px;
 		width: 20%;
 }
+
+div.popup {
+  position: absolute;
+  
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  
+  width: 600px;
+  height: 200px;
+  
+  margin: auto auto;
+  
+  background-color: #FFFFFF;
+  
+  border-width: 2px;
+  border-style: solid;
+  border-color: #555555;
+  border-radius: 10px 10px 10px 10px;
+  
+  box-shadow: 0 0 80px 40px #333333;
+  
+  z-index: 2000;
+}
+
+div.popup > *:first-child {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: #555555;
+  
+  border-radius: 8px 8px 0 0;
+  
+  padding-top: 15px;
+  padding-bottom: 15px;
+  
+  font-size: 28px;
+  font-weight: bold;
+  
+  background-image: -moz-linear-gradient(45deg,
+                                         rgba(255, 255, 255, 0.15) 025%,
+                                         rgba(255, 255, 255, 0.00) 025%,
+                                         rgba(255, 255, 255, 0.00) 050%,
+                                         rgba(255, 255, 255, 0.15) 050%,
+                                         rgba(255, 255, 255, 0.15) 075%,
+                                         rgba(255, 255, 255, 0.00) 075%,
+                                         rgba(255, 255, 255, 0.00) 100%);
+                                         
+  background-image: -webkit-gradient(linear,
+                                     left bottom,
+                                     right top,
+                                     color-stop(025%, rgba(255, 255, 255, 0.15)),
+                                     color-stop(025%, rgba(255, 255, 255, 0.00)),
+                                     color-stop(050%, rgba(255, 255, 255, 0.00)),
+                                     color-stop(050%, rgba(255, 255, 255, 0.15)),
+                                     color-stop(075%, rgba(255, 255, 255, 0.15)),
+                                     color-stop(075%, rgba(255, 255, 255, 0.00)),
+                                     color-stop(100%, rgba(255, 255, 255, 0.00)));
+                                     
+  background-image: -webkit-linear-gradient(45deg,
+                                            rgba(255, 255, 255, 0.15) 025%,
+                                            rgba(255, 255, 255, 0.00) 025%,
+                                            rgba(255, 255, 255, 0.00) 050%,
+                                            rgba(255, 255, 255, 0.15) 050%,
+                                            rgba(255, 255, 255, 0.15) 075%,
+                                            rgba(255, 255, 255, 0.00) 075%,
+                                            rgba(255, 255, 255, 0.00) 100%);
+                                            
+  background-image: -o-linear-gradient(45deg,
+                                       rgba(255, 255, 255, 0.15) 025%,
+                                       rgba(255, 255, 255, 0.00) 025%,
+                                       rgba(255, 255, 255, 0.00) 050%,
+                                       rgba(255, 255, 255, 0.15) 050%,
+                                       rgba(255, 255, 255, 0.15) 075%,
+                                       rgba(255, 255, 255, 0.00) 075%,
+                                       rgba(255, 255, 255, 0.00) 100%);
+                                       
+  background-image: -ms-linear-gradient(45deg, 
+                                        rgba(255, 255, 255, 0.15) 025%,
+                                        rgba(255, 255, 255, 0.00) 025%,
+                                        rgba(255, 255, 255, 0.00) 050%,
+                                        rgba(255, 255, 255, 0.15) 050%,
+                                        rgba(255, 255, 255, 0.15) 075%,
+                                        rgba(255, 255, 255, 0.00) 075%,
+                                        rgba(255, 255, 255, 0.00) 100%);
+                                        
+  background-image: linear-gradient(45deg,
+                                    rgba(255, 255, 255, 0.15) 025%,
+                                    rgba(255, 255, 255, 0.00) 025%,
+                                    rgba(255, 255, 255, 0.00) 050%,
+                                    rgba(255, 255, 255, 0.15) 050%,
+                                    rgba(255, 255, 255, 0.15) 075%,
+                                    rgba(255, 255, 255, 0.00) 075%,
+                                    rgba(255, 255, 255, 0.00) 100%);
+  
+  background-size: 60px 60px;
+  
+  text-align: center;
+  
+  color: #333333;
+}
+
+div.popup > *:last-child {
+  border-top-width: 2px;
+  border-top-style: solid;
+  border-top-color: #555555;
+  
+  border-radius: 0 0 8px 8px;
+  
+  background-color: #CCCCCC;
+  
+  text-align: right;
+  
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+div.popup > div {
+  padding: 10px 10px;
+  
+  color: #555555;
+}
+
+div.popup p,
+div.popup dl {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+div.popup code {
+  font-family: monospace;
+  font-weight: bold;
+  
+  text-align: center;
+  
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  
+  display: inline-block;
+  
+  width: 100%;
+  
+  color: #7AB51D;
+  background-color: #333333;
+  
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555555;
+  border-radius: 7px 7px 7px 7px;
+  
+  box-shadow: 3px 3px 4px #000000 inset;
+}
+
+div.popup dl > dt {
+  font-weight: bold;
+  
+  clear: left;
+  float: left;
+  
+  width: 7em;
+}
+
+div.popup dl > dt:after {
+  content: ':';
+  font-weight: bold;
+}
+
+div.popup.completed > *:first-child {
+  background-color: #7AB51D;
+}
+
+div.popup.error > *:first-child {
+  background-color: #D51D0D;
+}
+
+div#javascript-error a {
+  color: #555555;
+  background-color: #EEEEEE;
+  
+  padding: 10px 10px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: #555555;
+  border-radius: 5px 5px 5px 5px;
+
+  font-size: 14px;
+  font-weight: bold;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
