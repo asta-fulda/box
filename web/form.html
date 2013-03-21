@@ -46,7 +46,10 @@
   
           <p>
             Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
-            <code data-bind="text: url"></code>
+            <div class="url">
+              <code data-bind="text: url"></code>
+              <button>&gt;&nbsp;&lt;</button>
+            </div>
           </p>
   
           <p>oder teile den Link mit deinen Freunden oder der &Ouml;ffentlichkeit:</p>
@@ -102,12 +105,12 @@
             <div id="user_box">
               <h1>Benutzer-Informationen</h1>
               <p>
-                <label for="username" class="required">Benutzer</label><br />
+                <label for="username" class="required">FD-Nummer</label><br />
                 <input id="username" name="username" type="text" data-bind="value: username, readonly: upload" />
               </p>
               
               <p>
-                <label for="password" class="required">Password</label><br />
+                <label for="password" class="required">Passwort</label><br />
                 <input id="password" name="password" type="password" data-bind="value: password, readonly: upload" />
               </p>
             </div>
@@ -119,10 +122,10 @@
               
               <p>
                 <label for="file" class="required">Datei</label><br />
-                <input id="file" name="file" type="file" data-bind="value: file, readonly: true, visible: false" />
                 <span class="file_field">
+                  <input id="file" name="file" type="file" data-bind="value: file" />
                   <input id="file_overlay" type="text" style="display: none" data-bind="value: file, click: open_file_chooser, readonly: upload, visible: true" />
-                  <button style="display: none" data-bind="click: open_file_chooser, visible: true">Browse...</button>
+                  <button style="display: none" data-bind="click: open_file_chooser, disable: upload, visible: true">Datei...</button>
                 </span>
               </p>
             </div>

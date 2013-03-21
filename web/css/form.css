@@ -89,10 +89,11 @@ div#form_wrapper input,
 div#form_wrapper button,
 div#form_wrapper textarea {
 	width: 100%;
+	height: 38px;
 }
 
-input,
-textarea {
+div#form_wrapper input,
+div#form_wrapper textarea {
 	box-shadow: 1px 3px 4px #555555 inset;
 	
 	background-color: #FFFFFF;
@@ -103,35 +104,74 @@ button {
 	background-color: #EEEEEE;
 }
 
-textarea {
-	height: 90px;
+
+div#form_wrapper input[type=submit],
+div#form_wrapper button {
+	background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
+	background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
+	background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
 }
 
-input[type=checkbox] {
+div#form_wrapper input[type=checkbox] {
   width: auto;
+  height: auto;
+
+  background: none;
+
+  border: none;
+  box-shadow: none;
+
+  padding: 0;
+  margin: 0;
 }
 
-input[type=submit],
-span#progress {
+div#form_wrapper input[type=submit] {
 	background-color: #7AB51D;
 	color: #FFFFFF;
 }
 
-input[type=submit] {
+div#form_wrapper input[type=submit] {
 	margin-top: 15px;
 	
   box-shadow: 0 2px 4px #555555;
 }
 
-span#progress {
+div#form_wrapper span#progress {
   box-shadow: 1px 3px 4px #555555 inset;
 }
 
-input[type=submit]:disabled,
-input[readonly],
-textarea[readonly] {
+div#form_wrapper input[type=submit]:disabled,
+div#form_wrapper input[readonly],
+div#form_wrapper button:disabled,
+div#form_wrapper textarea[readonly] {
 	background-color: #999999;
 	color: #CCCCCC;
+}
+
+div#form_wrapper .file_field {
+  display: inline-block;
+  clear: both;
+  
+  width: 100%;
+  
+  position: relative;
+}
+
+div#form_wrapper .file_field > input#file {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  width: 100%;
+  
+  -moz-opacity:0 ;
+  filter:alpha(opacity: 0);
+  opacity: 0;
+  
+  z-index: 2;
 }
 
 div#form_wrapper .file_field > input[type=text] {
@@ -149,16 +189,9 @@ div#form_wrapper .file_field > button {
   float: left;
   width: 33%;
   
-  height: 38px;
-  
   border-left: none;
   
   box-shadow: none;
-}
-
-div#form_wrapper .file_field {
-		display: inline-block;
-		clear: both;
 }
 
 label.required:after {
@@ -301,7 +334,7 @@ span#progress_label {
 }
 
 div.popup.completed {
-	height: 440px;
+	height: 480px;
 }
 
 img.share_botton {
@@ -309,5 +342,9 @@ img.share_botton {
 		height: 48px;
 		
 		margin: 5px 5px;
+		
+		border-radius: 8px;
+		
+		box-shadow: 0 2px 4px #555555;		
 }
 
