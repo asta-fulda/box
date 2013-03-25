@@ -18,7 +18,7 @@
  */
 
 package main
-
+ 
 import (
 	"box"
 	"flag"
@@ -80,6 +80,8 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 		goto InternalError
 	}
 
+	box.LogDebug("Form: %+v", request.Form)
+
 	// Open a new transaction
 	transaction, err = database.BeginTransaction()
 	if err != nil {
@@ -90,7 +92,7 @@ func handleRequest(response http.ResponseWriter, request *http.Request) {
 
 	// Fill in upload record from the posted values
 	record.Filename = request.FormValue("file.name")
-
+	
 	// Check if terms are accepted
 	if request.FormValue("terms_accepted") != "on" {
 		answer.Error = &AnswerError{
@@ -173,6 +175,7 @@ InternalError:
 
 End:
 	// Send the anser to the client
+	box.LogDebug("Error: %+v", answer.Error)
 	box.LogDebug("Answer: %+v", answer)
 
 	answer.Send(response)

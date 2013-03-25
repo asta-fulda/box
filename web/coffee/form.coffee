@@ -25,6 +25,42 @@ ko.bindingHandlers.readonly =
             element.removeAttribute "readonly"
 
 
+class UrlModel
+    constructor: (url) ->
+        @long = url
+        @short = ko.observable null
+        
+        shortened = ko.observable false
+        
+        short_requested = false
+        
+        @shortened = ko.computed
+            read: () =>
+                shortened()
+            
+            write: (value) =>
+                if value and not short_requested
+                    $.ajax
+                        'url': 'https://www.googleapis.com/urlshortener/v1/url'
+                        'type': 'POST'
+                        
+                        'dataType': 'json'
+                        
+                        'contentType': 'application/json'
+                        'data': JSON.stringify
+                            'longUrl': @long
+                        
+                        'success': (data) =>
+                            @short data.id
+                        
+                        'error': (xhr, status, error) =>
+                            @short "Fehler: #{error}"
+                            
+                    short_requested = true
+                
+                shortened(value)
+
+
 class AnswerModel
     constructor: (data) ->
         @id = data.upload_id
@@ -33,8 +69,7 @@ class AnswerModel
         @size = data.upload_size
         @expiration = data.upload_expiration
         
-        @url = "#{base_url}/download.html?i=#{@id}&f=#{@file}"
-
+        @url = new UrlModel "#{base_url}/download.html?i=#{@id}&f=#{@file}"
 
 
 class ErrorModel

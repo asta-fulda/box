@@ -100,18 +100,6 @@ div#form_wrapper textarea {
 	color: #555555;
 }
 
-button {
-	background-color: #EEEEEE;
-}
-
-
-div#form_wrapper input[type=submit],
-div#form_wrapper button {
-	background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
-	background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
-	background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
-}
-
 div#form_wrapper input[type=checkbox] {
   width: auto;
   height: auto;

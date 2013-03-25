@@ -21,7 +21,7 @@
 
 
 (function() {
-  var AnswerModel, ErrorModel, Model, UploadModel,
+  var AnswerModel, ErrorModel, Model, UploadModel, UrlModel,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   ko.bindingHandlers.readonly = {
@@ -34,6 +34,47 @@
     }
   };
 
+  UrlModel = (function() {
+
+    function UrlModel(url) {
+      var short_requested, shortened,
+        _this = this;
+      this.long = url;
+      this.short = ko.observable(null);
+      shortened = ko.observable(false);
+      short_requested = false;
+      this.shortened = ko.computed({
+        read: function() {
+          return shortened();
+        },
+        write: function(value) {
+          if (value && !short_requested) {
+            $.ajax({
+              'url': 'https://www.googleapis.com/urlshortener/v1/url',
+              'type': 'POST',
+              'dataType': 'json',
+              'contentType': 'application/json',
+              'data': JSON.stringify({
+                'longUrl': _this.long
+              }),
+              'success': function(data) {
+                return _this.short(data.id);
+              },
+              'error': function(xhr, status, error) {
+                return _this.short("Fehler: " + error);
+              }
+            });
+            short_requested = true;
+          }
+          return shortened(value);
+        }
+      });
+    }
+
+    return UrlModel;
+
+  })();
+
   AnswerModel = (function() {
 
     function AnswerModel(data) {
@@ -42,7 +83,7 @@
       this.file = data.upload_file;
       this.size = data.upload_size;
       this.expiration = data.upload_expiration;
-      this.url = "" + base_url + "/download.html?i=" + this.id + "&f=" + this.file;
+      this.url = new UrlModel("" + base_url + "/download.html?i=" + this.id + "&f=" + this.file);
     }
 
     return AnswerModel;

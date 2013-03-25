@@ -46,9 +46,29 @@
   
           <p>
             Verwende diesen Link um die Datei herunterladen zu k&ouml;nnen:<br />
-            <div class="url">
-              <code data-bind="text: url"></code>
-              <button>&gt;&nbsp;&lt;</button>
+            <div class="url" data-bind="with: url">
+              <div class="box">
+                <code data-bind="
+                    text: shortened()
+                            ? short() == null
+                                ? 'Einen Moment bitte...'
+                                : short()
+                            : long">
+                </code>
+              </div>
+              <blockquote class="bubble">
+                Benutze diesen Knopf<br />
+                zum erzeugen eines<br />
+                gek&uuml;rzten Links&hellip;
+              </blockquote>
+              <button data-bind="
+                    text: shortened()
+                            ? '< >'
+                            : '> <',
+                    click: function() {
+                            shortened(!shortened());
+                    }">
+              </button>
             </div>
           </p>
   

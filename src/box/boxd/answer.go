@@ -49,7 +49,7 @@ type AnswerError struct {
 type Answer struct {
 
 	// The error
-	Error *AnswerError `json:"error"`
+	Error *AnswerError `json:"error,omitempty"`
 
 	// The ID of the upload
 	UploadId string `json:"upload_id"`
@@ -81,7 +81,7 @@ func (a *Answer) Send(response http.ResponseWriter) (err error) {
 		// Use status code OK if answer is a success
 		response.WriteHeader(http.StatusOK)
 	}
-
+	
 	// Create JSON encode and write anser to client
 	var encoder *json.Encoder = json.NewEncoder(response)
 	err = encoder.Encode(a)

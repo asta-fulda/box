@@ -112,6 +112,15 @@ div#footer div.beta {
 		font-size: 10px;
 }
 
+input[type=submit],
+button {
+    background-color: #EEEEEE;
+    
+    background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
+    background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
+    background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
+}
+
 div.popup {
   position: absolute;
   
@@ -254,18 +263,12 @@ div.popup div.url {
   position: relative;
 }
 
-div.popup div.url code {
-  display: inline-block;
-
-  font-family: monospace;
-  font-weight: bold;
-    
-  text-align: center;
-
+div.popup div.url div.box {
   padding-bottom: 7px;
   padding-top: 7px;
-
-  color: #7AB51D;
+  padding-left: 7px;
+  padding-right: 7px;
+  
   background-color: #333333;
 
   border-color: #555555;
@@ -281,7 +284,18 @@ div.popup div.url code {
   right: 50px;
   top: 0;
   bottom: 0;
+  
+  text-align: center;
 }
+
+div.popup div.url div.box code {
+  font-family: monospace;
+    
+  text-align: center;
+
+  color: #7AB51D;
+}
+
 div.popup div.url button {
   display: inline-block;
 
@@ -294,12 +308,6 @@ div.popup div.url button {
   right: 0;
   top: 0;
   bottom: 0;
-
-  background-color: #EEEEEE;
-
-  background-image: linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
-  background-image: -moz-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
-  background-image: -webkit-linear-gradient(-90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.08));
 }
 
 div.popup dl > dt {
@@ -341,4 +349,55 @@ div#javascript-error button {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.bubble {
+    background: #FFFFFF;
+    
+    border: 3px solid #7AB51D;
+    border-radius: 7px 7px 7px 7px;
+    
+    color: #333333;
+    
+    margin: 1em 0 3em 105%;
+
+    padding: 15px;
+    
+    position: absolute;
+    
+    width: 10em;
+}
+
+.bubble:before {
+    border-color: transparent #7AB51D;
+    border-style: solid;
+    border-width: 13px 30px 13px 0;
+    
+    content: '';
+    
+    display: block;
+    position: absolute;
+    
+    width: 0;
+    
+    left: -30px;
+    top: 12px;
+    bottom: auto;
+}
+
+.bubble:after {
+    border-color: transparent #FFFFFF;
+    border-style: solid;
+    border-width: 9px 21px 9px 0;
+    
+    content: '';
+    
+    display: block;
+    position: absolute;
+    
+    width: 0;
+    
+    bottom: auto;
+    left: -21px;
+    top: 16px;
 }
